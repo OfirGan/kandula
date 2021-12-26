@@ -16,7 +16,7 @@ resource "tfe_registry_module" "aws_servers_module" {
 ##################################################################################
 
 resource "tfe_workspace" "servers_workspace" {
-  name              = "${var.project_name}-servers-workspace"
+  name              = var.tfe_servers_workspace_name
   organization      = var.tfe_organization_name
   auto_apply        = var.auto_apply
   execution_mode    = "remote"
@@ -83,6 +83,14 @@ resource "tfe_variable" "tfe_organization_name" {
   key          = "tfe_organization_name"
   value        = var.tfe_organization_name
   description  = "Terrafrom Cloud Organization Name"
+  workspace_id = resource.tfe_workspace.servers_workspace.id
+  category     = "terraform"
+}
+
+resource "tfe_variable" "tfe_vpc_workspace_name" {
+  key          = "tfe_vpc_workspace_name"
+  value        = var.tfe_vpc_workspace_name
+  description  = "Terrafrom Cloud Servers Workspace Name"
   workspace_id = resource.tfe_workspace.servers_workspace.id
   category     = "terraform"
 }

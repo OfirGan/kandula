@@ -7,7 +7,7 @@ data "terraform_remote_state" "vpc" {
   config = {
     organization = var.tfe_organization_name
     workspaces = {
-      name = var.tfe_servers_workspace_name
+      name = var.tfe_vpc_workspace_name
     }
   }
 }
