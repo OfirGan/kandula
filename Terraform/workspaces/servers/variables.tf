@@ -2,6 +2,16 @@
 # VARIABLES
 ##################################################################################
 
+variable "tfe_organization_name" {
+  description = "Terrafrom Cloud Organization Name"
+  type        = string
+}
+
+variable "tfe_servers_workspace_name" {
+  description = "Terrafrom Cloud VPC Workspace Name"
+  type        = string
+}
+
 ##################################################################################
 # S3 For logs
 ##################################################################################
