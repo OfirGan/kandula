@@ -22,6 +22,12 @@ variable "tfe_servers_workspace_name" {
   type        = string
 }
 
+variable "tfe_kubernetes_workspace_name" {
+  description = "Terrafrom Cloud Kubernetes Workspace Name"
+  type        = string
+}
+
+
 variable "tfe_organization_email" {
   description = "Terraform Cloud Organization Email"
   type        = string
