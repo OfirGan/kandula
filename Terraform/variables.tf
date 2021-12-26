@@ -171,3 +171,18 @@ variable "slack_notification_webhook_url" {
   type        = string
   sensitive   = true
 }
+
+
+##################################################################################
+# Kubernetes
+##################################################################################
+variable "k8s_service_account_namespace" {
+  type        = string
+  description = "k8s Application Namespace"
+}
+
+variable "k8s_service_account" {
+  type        = string
+  description = "k8s Application Service Account"
+}
+

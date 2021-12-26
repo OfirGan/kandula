@@ -125,6 +125,9 @@ module "kubernetes_tfe_module" {
   aws_secret_access_key = var.aws_secret_access_key
   aws_default_region    = var.aws_default_region
 
+  k8s_service_account_namespace = var.k8s_service_account_namespace
+  k8s_service_account_name      = var.k8s_service_account_name
+
   depends_on = [module.vpc_tfe_module]
 }
 
@@ -135,5 +138,10 @@ module "kubernetes_tfe_module" {
 
 resource "tfe_run_trigger" "servers_auto_run_after_vpc" {
   workspace_id  = module.servers_tfe_module.workspace_id
+  sourceable_id = module.vpc_tfe_module.workspace_id
+}
+
+resource "tfe_run_trigger" "kubernetes_auto_run_after_vpc" {
+  workspace_id  = module.kubernetes_tfe_module.workspace_id
   sourceable_id = module.vpc_tfe_module.workspace_id
 }
