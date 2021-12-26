@@ -3,7 +3,7 @@
 ##################################################################################
 
 module "vpc" {
-  source  = "app.terraform.io/${var.tfe_organization_name}/vpc/aws"
+  source  = "app.terraform.io/Kandula-OpsSchool-OfirGan/vpc/aws"
   version = "v1.0.0"
 
   vpc_cidr                 = var.vpc_cidr

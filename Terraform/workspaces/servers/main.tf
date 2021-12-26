@@ -17,7 +17,7 @@ data "terraform_remote_state" "vpc" {
 ##################################################################################
 
 module "servers" {
-  source  = "app.terraform.io/${var.tfe_organization_name}/servers/aws"
+  source  = "app.terraform.io/Kandula-OpsSchool-OfirGan/servers/aws"
   version = "1.0.0"
 
 
