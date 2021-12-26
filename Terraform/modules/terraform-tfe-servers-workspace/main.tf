@@ -79,6 +79,14 @@ resource "tfe_variable" "aws_default_region" {
 # Workspace Variables
 ##################################################################################
 
+resource "tfe_variable" "tfe_organization_name" {
+  key          = "tfe_organization_name"
+  value        = var.tfe_organization_name
+  description  = "Terrafrom Cloud Organization Name"
+  workspace_id = resource.tfe_workspace.servers_workspace.id
+  category     = "terraform"
+}
+
 resource "tfe_variable" "tfe_servers_workspace_name" {
   key          = "tfe_servers_workspace_name"
   value        = var.tfe_servers_workspace_name
