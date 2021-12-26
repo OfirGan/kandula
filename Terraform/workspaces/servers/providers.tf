@@ -3,8 +3,6 @@
 ##################################################################################
 
 terraform {
-  required_version = "1.0.11"
-
   backend "remote" {
     organization = var.tfe_organization_name
 
