@@ -181,7 +181,7 @@ variable "k8s_service_account_namespace" {
   description = "k8s Application Namespace"
 }
 
-variable "k8s_service_account" {
+variable "k8s_service_account_name" {
   type        = string
   description = "k8s Application Service Account"
 }
