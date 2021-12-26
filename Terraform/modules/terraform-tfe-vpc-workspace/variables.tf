@@ -7,6 +7,11 @@ variable "tfe_organization_name" {
   type        = string
 }
 
+variable "tfe_vpc_workspace_name" {
+  description = "Terrafrom Cloud VPC Workspace Name"
+  type        = string
+}
+
 variable "tfe_github_oauth_token_id" {
   description = "Terraform Cloud GitHub Token ID"
   type        = string

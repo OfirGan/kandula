@@ -48,6 +48,7 @@ module "vpc_tfe_module" {
   source = ".\\modules\\terraform-tfe-vpc-workspace"
 
   tfe_organization_name          = var.tfe_organization_name
+  tfe_vpc_workspace_name         = "${var.project_name}-${var.tfe_vpc_workspace_name}"
   tfe_github_oauth_token_id      = resource.tfe_oauth_client.github_tfe_oauth_token.oauth_token_id
   notification_triggers          = var.notification_triggers
   slack_notification_webhook_url = var.slack_notification_webhook_url
@@ -72,6 +73,7 @@ module "servers_tfe_module" {
   source = ".\\modules\\terraform-tfe-servers-workspace"
 
   tfe_organization_name          = var.tfe_organization_name
+  tfe_servers_workspace_name     = "${var.project_name}-${var.tfe_servers_workspace_name}"
   tfe_github_oauth_token_id      = resource.tfe_oauth_client.github_tfe_oauth_token.oauth_token_id
   notification_triggers          = var.notification_triggers
   slack_notification_webhook_url = var.slack_notification_webhook_url

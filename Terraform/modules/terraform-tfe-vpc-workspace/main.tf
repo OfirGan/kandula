@@ -16,7 +16,7 @@ resource "tfe_registry_module" "aws_vpc_module" {
 ##################################################################################
 
 resource "tfe_workspace" "vpc_workspace" {
-  name                = "${var.project_name}-vpc-workspace"
+  name                = var.tfe_vpc_workspace_name
   organization        = var.tfe_organization_name
   auto_apply          = var.auto_apply
   execution_mode      = "remote"
@@ -81,6 +81,22 @@ resource "tfe_variable" "aws_default_region" {
 ##################################################################################
 # Workspace Variables
 ##################################################################################
+
+resource "tfe_variable" "tfe_organization_name" {
+  key          = "tfe_organization_name"
+  value        = var.tfe_organization_name
+  description  = "Terrafrom Cloud Organization Name"
+  workspace_id = resource.tfe_workspace.vpc_workspace.id
+  category     = "terraform"
+}
+
+resource "tfe_variable" "tfe_vpc_workspace_name" {
+  key          = "tfe_vpc_workspace_name"
+  value        = var.tfe_vpc_workspace_name
+  description  = "Terrafrom Cloud VPC Workspace Name"
+  workspace_id = resource.tfe_workspace.vpc_workspace.id
+  category     = "terraform"
+}
 
 resource "tfe_variable" "vpc_cidr" {
   key          = "vpc_cidr"
