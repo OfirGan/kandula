@@ -34,5 +34,5 @@ module "servers" {
   project_name = var.project_name
   owner_name   = var.owner_name
 
-  aws_server_key_name = var.aws_server_key_name.key_name
+  aws_server_key_name = var.aws_server_key_name
 }
