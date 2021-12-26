@@ -16,11 +16,12 @@ resource "tfe_registry_module" "aws_servers_module" {
 ##################################################################################
 
 resource "tfe_workspace" "servers_workspace" {
-  name              = var.tfe_servers_workspace_name
-  organization      = var.tfe_organization_name
-  auto_apply        = var.auto_apply
-  execution_mode    = "remote"
-  working_directory = var.servers_workspace_directory
+  name                = var.tfe_servers_workspace_name
+  organization        = var.tfe_organization_name
+  auto_apply          = var.auto_apply
+  execution_mode      = "remote"
+  working_directory   = var.servers_workspace_directory
+  global_remote_state = true
 
   vcs_repo {
     identifier     = "${var.github_user_name}/${var.github_workspace_repo_name}"
@@ -171,6 +172,7 @@ resource "tfe_variable" "owner_name" {
 #############################################
 # Keys
 #############################################
+
 resource "tfe_variable" "aws_server_key_name" {
   key          = "aws_server_key_name"
   value        = var.aws_server_key_name

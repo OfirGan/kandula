@@ -101,6 +101,31 @@ module "servers_tfe_module" {
 
   project_name = var.project_name
   owner_name   = var.owner_name
+
+  depends_on = [module.vpc_tfe_module]
+}
+
+module "kubernetes_tfe_module" {
+  source = ".\\modules\\terraform-tfe-kubernetes-workspace"
+
+  tfe_organization_name          = var.tfe_organization_name
+  tfe_vpc_workspace_name         = "${var.project_name}-${var.tfe_vpc_workspace_name}"
+  tfe_kubernetes_workspace_name  = "${var.project_name}-${var.tfe_kubernetes_workspace_name}"
+  tfe_github_oauth_token_id      = resource.tfe_oauth_client.github_tfe_oauth_token.oauth_token_id
+  notification_triggers          = var.notification_triggers
+  slack_notification_webhook_url = var.slack_notification_webhook_url
+  auto_apply                     = var.auto_apply
+
+  github_user_name               = var.github_user_name
+  github_workspace_repo_name     = var.github_workspace_repo_name
+  github_branch                  = var.github_branch
+  kubernetes_workspace_directory = var.kubernetes_workspace_directory
+
+  aws_access_key_id     = var.aws_access_key_id
+  aws_secret_access_key = var.aws_secret_access_key
+  aws_default_region    = var.aws_default_region
+
+  depends_on = [module.vpc_tfe_module]
 }
 
 

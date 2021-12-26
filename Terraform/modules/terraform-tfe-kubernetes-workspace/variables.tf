@@ -12,8 +12,8 @@ variable "tfe_vpc_workspace_name" {
   type        = string
 }
 
-variable "tfe_servers_workspace_name" {
-  description = "Terrafrom Cloud Servers Workspace Name"
+variable "tfe_kubernetes_workspace_name" {
+  description = "Terrafrom Cloud Kubernetes Workspace Name"
   type        = string
 }
 
@@ -48,13 +48,8 @@ variable "github_branch" {
   type        = string
 }
 
-variable "servers_workspace_directory" {
-  description = "Working directory for servers module"
-  type        = string
-}
-
-variable "github_aws_servers_module_repo_name" {
-  description = "Github VPS AWS Module Repo Name"
+variable "kubernetes_workspace_directory" {
+  description = "Working directory for kubernetes module"
   type        = string
 }
 
@@ -74,9 +69,8 @@ variable "slack_notification_webhook_url" {
   sensitive   = true
 }
 
-
 ##################################################################################
-# Servers Workspace Environment Variables
+# kubernetes Workspace Environment Variables
 ##################################################################################
 
 variable "aws_access_key_id" {
@@ -98,57 +92,13 @@ variable "aws_default_region" {
 
 
 ##################################################################################
-# Servers Workspace Variables
+# Kubernetes Workspace Variables
 ##################################################################################
 
-#############################################
-# S3 For logs
-#############################################
-variable "s3_logs_bucket_name" {
-  description = "Logs Bucket Name (lowercase only, no spaces)"
-  type        = string
+variable "k8s_service_account_namespace" {
+  description = "Kubernetes Service Account Namespace"
 }
 
-variable "elb_account_id" {
-  description = "ELB Account ID - pick one according to region https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions"
-  type        = string
-}
-
-#############################################
-# Servers
-#############################################
-variable "instance_type" {
-  description = "Servers Instance Type"
-  type        = string
-}
-
-variable "consul_servers_count" {
-  description = "How much Consul servers to create"
-  type        = number
-}
-
-variable "jenkins_nodes_count" {
-  description = "How much Jenkins nodes to create"
-  type        = number
-}
-
-#############################################
-# Tags
-#############################################
-variable "project_name" {
-  description = "Project Name"
-  type        = string
-}
-
-variable "owner_name" {
-  description = "Owner Name"
-  type        = string
-}
-
-#############################################
-# Keys
-#############################################
-variable "aws_server_key_name" {
-  description = "AWS EC2 Key pair Name"
-  type        = string
+variable "k8s_service_account_name" {
+  description = "Kubernetes Service Account Name"
 }
