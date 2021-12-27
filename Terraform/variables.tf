@@ -68,9 +68,15 @@ variable "vpc_workspace_directory" {
 }
 
 variable "servers_workspace_directory" {
-  description = "Working directory for vpc module"
+  description = "Working directory for Servers module"
   type        = string
 }
+
+variable "kubernetes_workspace_directory" {
+  description = "Working directory for Kubernetes module"
+  type        = string
+}
+
 
 variable "github_aws_vpc_module_repo_name" {
   description = "Github VPS AWS Module Repo Name"

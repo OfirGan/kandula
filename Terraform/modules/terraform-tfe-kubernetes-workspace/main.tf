@@ -26,7 +26,7 @@ resource "tfe_notification_configuration" "slac_notification" {
   destination_type = "slack"
   triggers         = var.notification_triggers
   url              = var.slack_notification_webhook_url
-  workspace_id     = resource.tfe_workspace.kubernetes_workspace.id
+  workspace_id     = resource.tfe_workspace.kubernetes.id
 }
 
 ##################################################################################
