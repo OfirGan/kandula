@@ -93,6 +93,10 @@ variable "aws_default_region" {
 ##################################################################################
 # Kubernetes Workspace Variables
 ##################################################################################
+variable "k8s_cluster_name" {
+  type        = string
+  description = "k8s Cluster Name"
+}
 
 variable "k8s_service_account_namespace" {
   description = "Kubernetes Service Account Namespace"

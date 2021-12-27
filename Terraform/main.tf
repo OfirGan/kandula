@@ -125,6 +125,7 @@ module "kubernetes_tfe_module" {
   aws_secret_access_key = var.aws_secret_access_key
   aws_default_region    = var.aws_default_region
 
+  k8s_cluster_name              = var.k8s_cluster_name
   k8s_service_account_namespace = var.k8s_service_account_namespace
   k8s_service_account_name      = var.k8s_service_account_name
 

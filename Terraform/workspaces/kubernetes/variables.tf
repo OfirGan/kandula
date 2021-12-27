@@ -25,3 +25,8 @@ variable "tfe_vpc_workspace_name" {
   type        = string
   description = "VPC Workspace Name for Backed State"
 }
+
+variable "k8s_cluster_name" {
+  type        = string
+  description = "k8s Cluster Name"
+}

@@ -25,7 +25,7 @@ output "region" {
 
 output "cluster_name" {
   description = "Kubernetes Cluster Name"
-  value       = data.terraform_remote_state.vpc.outputs.cluster_name
+  value       = var.k8s_cluster_name
 }
 
 output "oidc_provider_arn" {

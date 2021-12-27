@@ -188,6 +188,12 @@ variable "slack_notification_webhook_url" {
 ##################################################################################
 # Kubernetes
 ##################################################################################
+
+variable "k8s_cluster_name" {
+  type        = string
+  description = "k8s Cluster Name"
+}
+
 variable "k8s_service_account_namespace" {
   type        = string
   description = "k8s Application Namespace"

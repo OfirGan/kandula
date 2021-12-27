@@ -10,7 +10,7 @@ data "terraform_remote_state" "vpc" {
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   version         = "17.24.0"
-  cluster_name    = data.terraform_remote_state.vpc.outputs.cluster_name
+  cluster_name    = var.k8s_cluster_name
   cluster_version = var.kubernetes_version
   subnets         = data.terraform_remote_state.vpc.outputs.private_subnets_ids
 

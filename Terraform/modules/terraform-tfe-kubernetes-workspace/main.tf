@@ -79,6 +79,14 @@ resource "tfe_variable" "tfe_organization_name" {
   category     = "terraform"
 }
 
+resource "tfe_variable" "k8s_cluster_name" {
+  key          = "k8s_cluster_name"
+  value        = var.k8s_cluster_name
+  description  = "Kubernetes Cluster Name"
+  workspace_id = tfe_workspace.kubernetes.id
+  category     = "terraform"
+}
+
 resource "tfe_variable" "k8s_service_account_namespace" {
   key          = "k8s_service_account_namespace"
   value        = var.k8s_service_account_namespace
