@@ -2,7 +2,8 @@
 
 ## Terraform Cloud
 * Organization name
-
+* organization_email
+* Api token
 ---
 
 ## GitHub
@@ -11,7 +12,8 @@
 * Workspaces:
     * Workspaces Repository Name
     * VPC Workspace - VCS Repo Workinkg Directory (/working/dir)
-    * EC2 Workspace - VCS Repo Workinkg Directory (/working/dir)
+    * SERVERs Workspace - VCS Repo Workinkg Directory (/working/dir)
+    
 * Modules:
     * VPC Module Repository Name (path/to/module)
     * EC2 Module Repository Name (path/to/module)

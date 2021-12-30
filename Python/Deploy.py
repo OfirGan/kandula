@@ -32,6 +32,7 @@ def get_consul_servers_amount(ec2):
     count = 0
     running_instances = ec2.instances.filter(Filters=[
         {'Name': 'tag:service_role', 'Values': ['service_discovery']},
+        {'Name': 'tag:instance_type', 'Values': ['server']},
         {'Name': 'instance-state-name', 'Values': ['running']}
     ])
     for instance in running_instances:
@@ -83,6 +84,7 @@ def close_ssh_session(host_ssh_client, session_name):
 
 def ssh_run_commands(target_ssh_client: paramiko.client.SSHClient, commands: list):
     for command in commands:
+        print("="*25, command, "="*25, "\n")
         stdin, stdout, stderr = target_ssh_client.exec_command(command)
         for line in stdout.read().split(b'\n'):
             print(str(line))
@@ -102,7 +104,7 @@ if __name__ == '__main__':
     private_key_file_path = f"C:\\Downloads\\OpsSchool\\Private-Keys\\Kandula_Private_Key.pem"
     ssh_user_name = "ubuntu"
     consul_dc_name = "kandula-dc"
-    ansible_folder_path = f"..\\Ansible"
+    ansible_folder_path = f"C:\\Downloads\\OpsSchool\\Assignments\\Kandula\\kandula\\Ansible"
     ansible_folder_name = "Ansible"
     ec2 = boto3.resource('ec2')
 

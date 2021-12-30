@@ -15,7 +15,7 @@ output "bastion_server_private_ip" {
 
 output "consul_servers_private_ips" {
   description = "Consul Servers Private IP's"
-  value       = module.servers.jenkins_server_private_ip
+  value       = module.servers.consul_servers_private_ips
 }
 
 output "jenkins_server_private_ip" {
