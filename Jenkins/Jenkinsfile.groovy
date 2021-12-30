@@ -1,4 +1,4 @@
-properties([parameters([choice(choices: ['disabled','enabled'], name: 'deploy', description: 'Should Deploy the Knadula🐘 app?')])])
+properties([parameters([choice(choices: ['disabled','enabled'], name: 'deploy', description: 'Should Deploy the Knadula 🐘 app?')])])
 dockerRegistry = "https://registry.hub.docker.com/"
 dockerRepo = "ofirgan/kandula-app"
 dockerVer = "v1.0"
@@ -62,11 +62,11 @@ node(label: "docker"){
             """
     }
     stage ('K8S Deploy') {
-                kubernetesDeploy(
-                    configs: 'dep.yaml',
-                    kubeconfigId: 'k8s-tfe',
-                    enableConfigSubstitution: true
-                    )               
+            kubernetesDeploy(
+                configs: 'dep.yaml',
+                kubeconfigId: 'k8s-tfe',
+                enableConfigSubstitution: true
+            )               
         }
     }
 }
