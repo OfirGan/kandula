@@ -1,8 +1,7 @@
+import sys
 from typing import Dict, List
 import boto3
 import paramiko
-import sys
-from paramiko.rsakey import RSAKey
 from scp import SCPClient
 
 
