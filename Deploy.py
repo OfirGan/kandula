@@ -193,8 +193,17 @@ def create_dict_from_tfvars_file(tfvars_file_path):
         for line in tfvars_file.readlines():
             line_no_spaces = line.strip('\n').replace(" ", "")
             if not line.startswith("#"):
+                # Add String value
                 for key, value in re.findall(r'(\S+)="(\S+)"', line_no_spaces):
                     tfvars_dict[key] = value.strip('"')
+
+                # Add Int Value
+                for key, value in re.findall(r'(\S+)=([0-9]+)', line_no_spaces):
+                    tfvars_dict[key] = int(value)
+
+                # Add List \ Boolean Value
+                for key, value in re.findall(r'(\S+)=(\[.*?\]|true|false)', line_no_spaces):
+                    tfvars_dict[key] = value
 
     return tfvars_dict
 
