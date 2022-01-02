@@ -8,4 +8,4 @@
   lineinfile:
     path: /etc/consul.d/config.json
     regexp: "^(.*)servers_count(.*)$"
-    line: '"bootstrap_expect": {{ consul_servers_amount }},'
+    line: '"bootstrap_expect": {{ consul_servers_count }},'
