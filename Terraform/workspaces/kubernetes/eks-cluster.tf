@@ -52,19 +52,6 @@ module "eks" {
     }
   ]
 
-  map_users = [
-    {
-      userarn  = data.terraform_remote_state.servers.outputs.jenkins_nodes_arns[0]
-      username = data.terraform_remote_state.servers.outputs.jenkins_nodes_ids[0]
-      groups   = ["system:masters"]
-    },
-    {
-      userarn  = data.terraform_remote_state.servers.outputs.jenkins_nodes_arns[1]
-      username = data.terraform_remote_state.servers.outputs.jenkins_nodes_ids[1]
-      groups   = ["system:masters"]
-    }
-  ]
-
   map_roles = [
     {
       rolearn  = data.terraform_remote_state.servers.outputs.iam_role_arn
@@ -72,6 +59,7 @@ module "eks" {
       groups   = ["system:masters"]
     }
   ]
+
   manage_aws_auth = true
 
 }
