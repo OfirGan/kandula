@@ -67,7 +67,7 @@ module "eks" {
 
   map_roles = [
     {
-      rolearn  = data.terraform_remote_state.vpc.outputs.iam_role_arn
+      rolearn  = data.terraform_remote_state.servers.outputs.iam_role_arn
       username = "system:node:{{EC2PrivateDNSName}}"
       groups   = ["system:masters"]
     }
