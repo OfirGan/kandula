@@ -173,7 +173,7 @@ def run_ansible_deployment(ansible_ssh_client: paramiko.client.SSHClient, tfvars
     ]
 
     run_ansible_playbook_commands = [
-        f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml -e "consul_servers_count={consul_servers_count} consul_dc_name={consul_dc_name} k8s_cluster_name={k8s_cluster_name} aws_default_region={aws_default_region}"'
+        f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml -e "consul_servers_count={consul_servers_count} consul_dc_name={consul_dc_name} eks_cluster_name={k8s_cluster_name} aws_default_region={aws_default_region}"'
     ]
 
     ssh_run_commands(ansible_ssh_client, fix_ssh_config)
