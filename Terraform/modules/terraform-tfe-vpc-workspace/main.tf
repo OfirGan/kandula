@@ -22,6 +22,7 @@ resource "tfe_workspace" "vpc_workspace" {
   execution_mode      = "remote"
   working_directory   = var.vpc_workspace_directory
   global_remote_state = true
+  queue_all_runs      = false
 
   vcs_repo {
     identifier     = "${var.github_user_name}/${var.github_workspace_repo_name}"
