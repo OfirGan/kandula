@@ -1,12 +1,23 @@
 data "terraform_remote_state" "vpc" {
   backend = "remote"
   config = {
-    organization = "${var.tfe_organization_name}"
+    organization = var.tfe_organization_name
     workspaces = {
-      name = "${var.tfe_vpc_workspace_name}"
+      name = var.tfe_vpc_workspace_name
     }
   }
 }
+
+data "terraform_remote_state" "servers" {
+  backend = "remote"
+  config = {
+    organization = var.tfe_organization_name
+    workspaces = {
+      name = var.tfe_servers_workspace_name
+    }
+  }
+}
+
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   version         = "17.24.0"
@@ -40,6 +51,28 @@ module "eks" {
       additional_security_group_ids = [aws_security_group.all_worker_mgmt.id]
     }
   ]
+
+  map_users = [
+    {
+      userarn  = data.terraform_remote_state.servers.outputs.jenkins_nodes_arns[0]
+      username = data.terraform_remote_state.servers.outputs.jenkins_nodes_ids[0]
+      groups   = ["system:masters"]
+    },
+    {
+      userarn  = data.terraform_remote_state.servers.outputs.jenkins_nodes_arns[1]
+      username = data.terraform_remote_state.servers.outputs.jenkins_nodes_ids[1]
+      groups   = ["system:masters"]
+    }
+  ]
+
+  map_roles = [
+    {
+      rolearn  = data.terraform_remote_state.vpc.outputs.iam_role_arn
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups   = ["system:masters"]
+    }
+  ]
+  manage_aws_auth = true
 
 }
 

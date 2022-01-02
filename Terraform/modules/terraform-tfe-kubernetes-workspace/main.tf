@@ -3,17 +3,19 @@
 ##################################################################################
 
 resource "tfe_workspace" "kubernetes" {
-  name         = var.tfe_kubernetes_workspace_name
-  organization = var.tfe_organization_name
+  name                = var.tfe_kubernetes_workspace_name
+  organization        = var.tfe_organization_name
+  auto_apply          = var.auto_apply
+  execution_mode      = "remote"
+  working_directory   = var.kubernetes_workspace_directory
+  global_remote_state = true
+  queue_all_runs      = false
+
   vcs_repo {
     identifier     = "${var.github_user_name}/${var.github_workspace_repo_name}"
     oauth_token_id = var.tfe_github_oauth_token_id
     branch         = var.github_branch
   }
-  global_remote_state = true
-  execution_mode      = "remote"
-  working_directory   = var.kubernetes_workspace_directory
-  auto_apply          = var.auto_apply
 }
 
 ##################################################################################
@@ -70,6 +72,15 @@ resource "tfe_variable" "tfe_vpc_workspace_name" {
   workspace_id = tfe_workspace.kubernetes.id
   category     = "terraform"
 }
+
+resource "tfe_variable" "tfe_servers_workspace_name" {
+  key          = "tfe_servers_workspace_name"
+  value        = var.tfe_servers_workspace_name
+  description  = "Servers Workspace Name"
+  workspace_id = tfe_workspace.kubernetes.id
+  category     = "terraform"
+}
+
 
 resource "tfe_variable" "tfe_organization_name" {
   key          = "tfe_organization_name"
