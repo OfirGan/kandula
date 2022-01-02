@@ -27,6 +27,7 @@ resource "tfe_workspace" "servers_workspace" {
   vcs_repo {
     identifier     = "${var.github_user_name}/${var.github_workspace_repo_name}"
     oauth_token_id = var.tfe_github_oauth_token_id
+    branch         = var.github_branch
   }
 
   depends_on = [tfe_registry_module.aws_servers_module]
