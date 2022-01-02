@@ -1,4 +1,6 @@
+import os
 import sys
+import re
 from typing import Dict, List
 import boto3
 import paramiko
@@ -138,36 +140,22 @@ def scp_file_copy(ssh_session: paramiko.client.SSHClient, file: str, remote_path
         scp.put(file, remote_path=remote_path, recursive=True)
 
 
-if __name__ == '__main__':
-    private_key_file_path = f"C:\\Downloads\\OpsSchool\\Private-Keys\\Kandula_Private_Key.pem"
-    ssh_user_name = "ubuntu"
-    consul_dc_name = "kandula-dc"
-    ansible_folder_path = f"C:\\Downloads\\OpsSchool\\Assignments\\Kandula\\kandula\\Ansible"
-    ansible_folder_name = "Ansible"
-    ec2 = boto3.resource('ec2')
+def run_ansible_deployment(ansible_ssh_client: paramiko.client.SSHClient, tfvars_dict):
+    os.chdir(sys.path[0])
+    ansible_folder = f"Ansible"
 
-    bastion_host_public_ip = get_bastion_host_ip(ec2, True)
-    bastion_host_private_ip = get_bastion_host_ip(ec2, False)
-    ansible_server_ip = get_ansible_server_ip(ec2)
-    jenkins_server_ip = get_jenkins_server_ip(ec2)
-    consul_servers_amount = get_consul_servers_amount(ec2)
-
-    bastion_ssh_client = ssh_client_connection(
-        bastion_host_public_ip, ssh_user_name, private_key_file_path)
-
-    ansible_ssh_client = ssh_client_connection_throgh_bastion_host(
-        bastion_ssh_client, bastion_host_private_ip, ansible_server_ip, ssh_user_name, private_key_file_path)
+    consul_servers_count = tfvars_dict['consul_servers_count']
+    consul_dc_name = tfvars_dict['consul_servers_count']
+    k8s_cluster_name = tfvars_dict['k8s_cluster_name']
+    aws_default_region = tfvars_dict['aws_default_region']
 
     scp_file_copy(ansible_ssh_client,
                   private_key_file_path, '/home/ubuntu/.ssh/id_rsa')
 
-    scp_file_copy(ansible_ssh_client, {ansible_folder_path}, '~/')
+    scp_file_copy(ansible_ssh_client, {ansible_folder}, '~/')
 
-    fix_ssh_file_permissions = [
-        "chmod 600 /home/ubuntu/.ssh/id_rsa"
-    ]
-
-    allow_clean_ssh = [
+    fix_ssh_config = [
+        "chmod 600 /home/ubuntu/.ssh/id_rsa",
         "sudo sed -i 's/#   StrictHostKeyChecking ask/    StrictHostKeyChecking no/g' /etc/ssh/ssh_config"
     ]
 
@@ -185,15 +173,79 @@ if __name__ == '__main__':
     ]
 
     run_ansible_playbook_commands = [
-        f'ansible-playbook {ansible_folder_name}/main.yml -i {ansible_folder_name}/aws_ec2.yml -e "consul_servers_amount={consul_servers_amount} consul_dc_name={consul_dc_name}"'
+        f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml -e "consul_servers_count={consul_servers_count} consul_dc_name={consul_dc_name} k8s_cluster_name={k8s_cluster_name} aws_default_region={aws_default_region}"'
     ]
 
-    ssh_run_commands(bastion_ssh_client, allow_clean_ssh)
-    ssh_run_commands(ansible_ssh_client, allow_clean_ssh)
-    ssh_run_commands(ansible_ssh_client, fix_ssh_file_permissions)
+    ssh_run_commands(ansible_ssh_client, fix_ssh_config)
     ssh_run_commands(ansible_ssh_client, install_ansible_commands)
     ssh_run_commands(ansible_ssh_client, install_ansible_modules)
     ssh_run_commands(ansible_ssh_client, run_ansible_playbook_commands)
+
+    pass
+
+
+def create_dict_from_tfvars_file(tfvars_file_path):
+    os.chdir(sys.path[0])
+
+    tfvars_dict = {}
+
+    with open(tfvars_file_path, "r") as tfvars_file:
+        for line in tfvars_file.readlines():
+            line_no_spaces = line.strip('\n').replace(" ", "")
+            if not line.startswith("#"):
+                for key, value in re.findall(r'(\S+)="(\S+)"', line_no_spaces):
+                    tfvars_dict[key] = value.strip('"')
+
+    return tfvars_dict
+
+
+def deploy_terraform(tfvars_file_path):
+    os.chdir(sys.path[0])
+    os.chdir("Terraform")
+    os.system(f"terraform init")
+    os.system(
+        "terraform plan -var-file {} -out plan.tfstate -compact-warnings".format(tfvars_file_path))
+    os.system(f"terraform apply plan.tfstate")
+    os.chdir("..")
+
+
+if __name__ == '__main__':
+    tfvars_file_path = "C:\\Downloads\\OpsSchool\\Assignments\\Kandula\\kandula\\terraform.tfvars"
+    tfvars_dict = create_dict_from_tfvars_file(tfvars_file_path)
+
+    deploy_terraform(tfvars_file_path)
+
+    print("Please apply plans on Terraform Cloud")
+
+    print("Please apply plans on Terraform Cloud VPC -> Servers -> Kubernetes")
+    print("Did all plans apllied? -> (yes \ no)")
+    string = str(input())
+
+    while string != "yes":
+        print("Enter 'yes' when plans applied")
+        string = str(input())
+
+    private_key_file_path = tfvars_dict['private_key_file_path']
+    ec2_user_name = tfvars_dict['ec2_user_name']
+    ec2 = boto3.resource('ec2')
+
+    bastion_host_public_ip = get_bastion_host_ip(ec2, True)
+    bastion_host_private_ip = get_bastion_host_ip(ec2, False)
+    ansible_server_ip = get_ansible_server_ip(ec2)
+    jenkins_server_ip = get_jenkins_server_ip(ec2)
+
+    bastion_ssh_client = ssh_client_connection(
+        bastion_host_public_ip, ec2_user_name, private_key_file_path)
+
+    ansible_ssh_client = ssh_client_connection_throgh_bastion_host(
+        bastion_ssh_client, bastion_host_private_ip, ansible_server_ip, ec2_user_name, private_key_file_path)
+
+    ssh_run_commands(bastion_ssh_client, [
+        "sudo sed -i 's/#   StrictHostKeyChecking ask/    StrictHostKeyChecking no/g' /etc/ssh/ssh_config"
+    ]
+    )
+
+    run_ansible_deployment(ansible_ssh_client, tfvars_dict)
 
     close_ssh_session(ansible_ssh_client, "Ansible Server")
     close_ssh_session(bastion_ssh_client, "Bastion Host")
