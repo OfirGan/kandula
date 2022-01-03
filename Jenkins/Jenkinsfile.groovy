@@ -14,7 +14,7 @@ echo "Deploy is: ${params.deploy}"
 node(label: "docker"){
     stage('Clone Kandula App Repo to Worker Node') {
         script {
-            git branch: "${github_branch}", credentialsId: "${github_creds_id}", url: "${githubRepo}"
+            git branch: "${github_branch}", credentialsId: "${github_creds_id}", url: "${github_repo_ssh_Path}"
         }
     }
     stage("Build Dockerfile") {
