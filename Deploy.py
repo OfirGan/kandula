@@ -217,7 +217,7 @@ def deploy_terraform(tfvars_file_path):
 
 
 if __name__ == '__main__':
-    tfvars_file_path = "C:\\Downloads\\OpsSchool\\Assignments\\Kandula\\kandula\\terraform.tfvars"
+    tfvars_file_path = "..\\terraform.tfvars"
     tfvars_dict = create_dict_from_tfvars_file(tfvars_file_path)
     deploy_terraform(tfvars_file_path)
 
