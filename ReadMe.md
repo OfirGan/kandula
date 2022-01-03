@@ -42,6 +42,13 @@
 * run piplin 2 times (first will fail due to params config)
 ~~~
 
+# Git Repos Used
+~~~
+* git@github.com:OfirGan/terraform-aws-vpc.git
+* git@github.com:OfirGan/terraform-aws-servers.git
+* git@github.com:OfirGan/kandula.git
+~~~
+
 # Prerequisites
 ~~~
 
