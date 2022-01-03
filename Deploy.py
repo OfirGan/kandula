@@ -1,7 +1,6 @@
 import os
 import sys
 import re
-from typing import Dict, List
 import boto3
 import paramiko
 from scp import SCPClient
@@ -86,9 +85,8 @@ def ssh_client_connection(target_host_ip, ssh_user_name, private_key_file_path):
 
         return host_ssh_client
 
-    except:
-        print(
-            f"Error Connecting To: {0}".format(target_host_ip))
+    except Exception:
+        print(f"Error Connecting To: {0}".format(target_host_ip))
         exit()
 
 
@@ -108,9 +106,8 @@ def ssh_client_connection_throgh_bastion_host(bastion_host_ssh_client, bastion_h
 
         return target_host_ssh_client
 
-    except:
-        print(
-            f"Error Connecting To: {0} Through Bastion Host".format(target_host_ip))
+    except Exception:
+        print(f"Error Connecting To: {0} Through Bastion Host".format(target_host_ip))
         exit()
 
 
@@ -142,7 +139,7 @@ def scp_file_copy(ssh_session: paramiko.client.SSHClient, file: str, remote_path
 
 def run_ansible_deployment(ansible_ssh_client: paramiko.client.SSHClient, tfvars_dict):
     os.chdir(sys.path[0])
-    ansible_folder = f"Ansible"
+    ansible_folder = "Ansible"
 
     consul_servers_count = tfvars_dict['consul_servers_count']
     consul_dc_name = tfvars_dict['consul_servers_count']
@@ -211,10 +208,10 @@ def create_dict_from_tfvars_file(tfvars_file_path):
 def deploy_terraform(tfvars_file_path):
     os.chdir(sys.path[0])
     os.chdir("Terraform")
-    os.system(f"terraform init")
+    os.system("terraform init")
     os.system(
         "terraform plan -var-file {} -out plan.tfstate -compact-warnings".format(tfvars_file_path))
-    os.system(f"terraform apply plan.tfstate")
+    os.system("terraform apply plan.tfstate")
     os.chdir("..")
 
 
@@ -227,7 +224,7 @@ if __name__ == '__main__':
     print("Please apply plans on Terraform Cloud")
 
     print("Please apply plans on Terraform Cloud VPC -> Servers -> Kubernetes")
-    print("Did all plans apllied? -> (yes \ no)")
+    print("Did all plans apllied? -> (yes / no)")
     string = str(input())
 
     while string != "yes":

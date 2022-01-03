@@ -8,7 +8,7 @@ kubectl
 To Do:
 =======
 
-python3 /c/Downloads/OpsSchool/Assignments/Kandula/kandula/Python/Deploy.py
+python3 /c/Downloads/OpsSchool/Assignments/Kandula/kandula/Deploy.py
 
 
 Terraform Cloud:
