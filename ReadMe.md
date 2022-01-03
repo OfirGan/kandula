@@ -12,7 +12,7 @@
 ~~~
 
 
-# Manually Config Jenkis:
+# Manually Config Jenkis To Deploy App:
 
 ~~~
 ## Create Users: (hard coded ids in Jenkins/Jenkinsfile.groovy)
@@ -39,7 +39,7 @@
 * Branch -> mid-project
 * Script Path -> Jenkins/Jenkinsfile.groovy
 
-* run piplin 2 (first will fail due to params config)
+* run piplin 2 times (first will fail due to params config)
 ~~~
 
 # Prerequisites
