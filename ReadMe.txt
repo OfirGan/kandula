@@ -47,3 +47,6 @@ Repository URL -> git@github.com:OfirGan/kandula.git
 Credentials -> github
 Branch -> mid-project
 Script Path -> Jenkins/Jenkinsfile.groovy
+
+
+Apply Pipeline :)

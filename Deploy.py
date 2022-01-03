@@ -29,6 +29,7 @@ def print_jenkins_nodes_ip(ec2):
     for instance in running_instances:
         print("jenkins_node{0}_ip: {1}".format(
             count, instance.private_ip_address))
+        count += 1
     pass
 
 
@@ -218,18 +219,21 @@ def deploy_terraform(tfvars_file_path):
 if __name__ == '__main__':
     tfvars_file_path = "C:\\Downloads\\OpsSchool\\Assignments\\Kandula\\kandula\\terraform.tfvars"
     tfvars_dict = create_dict_from_tfvars_file(tfvars_file_path)
-
     deploy_terraform(tfvars_file_path)
-
-    print("Please apply plans on Terraform Cloud")
 
     print("Please apply plans on Terraform Cloud VPC -> Servers -> Kubernetes")
     print("Did all plans apllied? -> (yes / no)")
-    string = str(input())
+    input_str = str(input())
+    
+    if input_str == "no":
+        exit()
 
-    while string != "yes":
+    while input_str != "yes":
         print("Enter 'yes' when plans applied")
-        string = str(input())
+        input_str = str(input())
+        if input_str == "no":
+            exit()
+        
 
     private_key_file_path = tfvars_dict['private_key_file_path']
     ec2_user_name = tfvars_dict['ec2_user_name']
