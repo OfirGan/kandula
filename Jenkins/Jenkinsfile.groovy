@@ -87,7 +87,7 @@ node(label: "docker"){
         }
 
         stage ('K8S Deploy Application') {
-          sh 'kubectl apply -f kanduka-app-deployment.yaml'
+          sh 'kubectl apply -f kandula-app-deployment.yaml'
         }
 
         stage ('K8S Deploy Service') {
