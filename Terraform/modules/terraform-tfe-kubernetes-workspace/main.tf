@@ -24,7 +24,7 @@ resource "tfe_workspace" "kubernetes" {
 
 resource "tfe_notification_configuration" "slac_notification" {
   name             = "Slac Notification"
-  enabled          = true
+  enabled          = false
   destination_type = "slack"
   triggers         = var.notification_triggers
   url              = var.slack_notification_webhook_url
