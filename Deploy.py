@@ -233,7 +233,7 @@ def create_tfe_api_session(tfe_token : string):
 
 def get_workspaces_names_list(ssesion : requests.Session, organization_name : string):
     response = session.get(
-        f"https://app.terraform.io/api/v2/organizations/{tfvars_dict['tfe_organization_name']}/workspaces"
+        f"https://app.terraform.io/api/v2/organizations/{organization_name}/workspaces"
     ).json()
 
     workspaces_names_list = []
@@ -268,12 +268,16 @@ if __name__ == '__main__':
     tfvars_file_path = sys.path[0] + "//terraform.tfvars"
     tfvars_dict = create_dict_from_tfvars_file(tfvars_file_path)
 
-    deploy_terraform(tfvars_file_path)
+    # deploy_terraform(tfvars_file_path)
 
     session = create_tfe_api_session(tfvars_dict["tfe_token"]) 
+    
     all_vars_dict = get_all_workspaces_vars_dict(session, tfvars_dict['tfe_organization_name'])
-    all_vars_dict.update(tfvars_dict);
+    all_vars_dict = all_vars_dict | tfvars_dict;
+
+    print("End")
     exit()
+    
     print("Please apply plans on Terraform Cloud VPC -> Servers -> Kubernetes")
     print("Did all plans apllied? -> (yes / no)")
     input_str = str(input())
