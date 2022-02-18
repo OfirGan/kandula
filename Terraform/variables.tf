@@ -96,7 +96,7 @@ variable "github_aws_vpc_module_repo_name" {
 variable "github_aws_servers_module_repo_name" {
   description = "Github VPS AWS Module Repo Name"
   type        = string
-  default     = "terraform-aws-server"
+  default     = "terraform-aws-servers"
 }
 
 ##################################################################################
