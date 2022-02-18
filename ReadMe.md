@@ -1,6 +1,6 @@
 # How To Deploy:
 ~~~
-* Create terraform.tfvars using the "Example_tfvars_file.txt" in the same directory of the Deploy.py file
+* Create terraform.tfvars using the "Example_tfvars_file.md" in the same directory of the Deploy.py file
 * Fill it with all the necessary data
 
 * python3 Deploy.py (it will pause)
