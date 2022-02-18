@@ -17,7 +17,7 @@ data "terraform_remote_state" "vpc" {
 ##################################################################################
 
 module "servers" {
-  source  = "app.terraform.io/Kandula-OpsSchool-OfirGan/servers/aws"
+  source  = "app.terraform.io/Kandula-OpsSchool-Project/servers/aws"
   version = "1.0.0"
 
   vpc_id              = data.terraform_remote_state.vpc.outputs.vpc_id
