@@ -268,12 +268,11 @@ if __name__ == '__main__':
     tfvars_file_path = sys.path[0] + "//terraform.tfvars"
     tfvars_dict = create_dict_from_tfvars_file(tfvars_file_path)
 
-    #deploy_terraform(tfvars_file_path)
+    deploy_terraform(tfvars_file_path)
 
     session = create_tfe_api_session(tfvars_dict["tfe_token"]) 
-    vars_dict = get_all_workspaces_vars_dict(session, tfvars_dict['tfe_organization_name'])
-    print(tfvars_dict)
-
+    all_vars_dict = get_all_workspaces_vars_dict(session, tfvars_dict['tfe_organization_name'])
+    all_vars_dict.update(tfvars_dict);
     exit()
     print("Please apply plans on Terraform Cloud VPC -> Servers -> Kubernetes")
     print("Did all plans apllied? -> (yes / no)")
