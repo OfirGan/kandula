@@ -1,5 +1,8 @@
 import os
 import sys
+from typing import Dict
+from markupsafe import string
+import requests
 import re
 import boto3
 import paramiko
@@ -142,8 +145,9 @@ def run_ansible_deployment(ansible_ssh_client: paramiko.client.SSHClient, tfvars
     os.chdir(sys.path[0])
     ansible_folder = "Ansible"
 
+    consul_dc_name = "kandula-dc"
+
     consul_servers_count = tfvars_dict['consul_servers_count']
-    consul_dc_name = tfvars_dict['consul_servers_count']
     k8s_cluster_name = tfvars_dict['k8s_cluster_name']
     aws_default_region = tfvars_dict['aws_default_region']
 
@@ -216,11 +220,61 @@ def deploy_terraform(tfvars_file_path):
     os.chdir("..")
 
 
-if __name__ == '__main__':
-    tfvars_file_path = "..\\terraform.tfvars"
-    tfvars_dict = create_dict_from_tfvars_file(tfvars_file_path)
-    deploy_terraform(tfvars_file_path)
 
+def create_tfe_api_session(tfe_token : string):
+    session = requests.Session()
+    session.headers.update(
+        {
+            "Authorization": f"Bearer {tfe_token}",
+            "Content-Type": "application/vnd.api+json",
+        }
+    )
+    return session
+
+def get_workspaces_names_list(ssesion : requests.Session, organization_name : string):
+    response = session.get(
+        f"https://app.terraform.io/api/v2/organizations/{tfvars_dict['tfe_organization_name']}/workspaces"
+    ).json()
+
+    workspaces_names_list = []
+    for workspace in response['data']:
+        workspaces_names_list.append(workspace['attributes']['name'])
+ 
+    return workspaces_names_list
+
+def get_workspace_vars_dict(ssesion : requests.Session, organization_name : string , workspace_name : string):
+    response = session.get(
+        f"https://app.terraform.io/api/v2/vars?filter%5Borganization%5D%5Bname%5D={organization_name}&filter%5Bworkspace%5D%5Bname%5D={workspace_name}" 
+    ).json()
+    vars_dict = {}
+    for var in response['data']:
+        dict_key = var['attributes']['key']
+        dict_value = var['attributes']['value']
+        vars_dict[dict_key] = dict_value
+    return vars_dict
+
+def get_all_workspaces_vars_dict(ssesion : requests.Session,  organization_name : string ):
+
+    workspaces_names_list = get_workspaces_names_list(session, organization_name)
+
+    vars_dict_all = {}
+    for workspace_name in workspaces_names_list:
+        workspace_vars_dict = get_workspace_vars_dict(session, organization_name, workspace_name)
+        vars_dict_all.update(workspace_vars_dict)
+
+    return vars_dict_all
+
+if __name__ == '__main__':
+    tfvars_file_path = sys.path[0] + "//terraform.tfvars"
+    tfvars_dict = create_dict_from_tfvars_file(tfvars_file_path)
+
+    #deploy_terraform(tfvars_file_path)
+
+    session = create_tfe_api_session(tfvars_dict["tfe_token"]) 
+    vars_dict = get_all_workspaces_vars_dict(session, tfvars_dict['tfe_organization_name'])
+    print(tfvars_dict)
+
+    exit()
     print("Please apply plans on Terraform Cloud VPC -> Servers -> Kubernetes")
     print("Did all plans apllied? -> (yes / no)")
     input_str = str(input())
@@ -236,7 +290,7 @@ if __name__ == '__main__':
         
 
     private_key_file_path = tfvars_dict['private_key_file_path']
-    ec2_user_name = tfvars_dict['ec2_user_name']
+    ec2_user_name = "ubuntu"
     ec2 = boto3.resource('ec2')
 
     bastion_host_public_ip = get_bastion_host_ip(ec2, True)

@@ -5,27 +5,14 @@ create terraform.tfvars using this template:
 # Terraform Cloud
 ##################################################################################
 tfe_organization_name         = "Kandula-OpsSchool-OfirGan" ## hard coded in -> workspaces folder -> main.tf -> module source ##
-tfe_vpc_workspace_name        = "vpc-workspace"
-tfe_servers_workspace_name    = "servers-workspace"
-tfe_kubernetes_workspace_name = "kubernetes-workspace"
 tfe_organization_email        = "user@gmail.com"
 tfe_token                     = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-auto_apply                    = false
 
 ##################################################################################
 # Github
 ##################################################################################
 github_personal_access_token = "xxxxxxxxxxxxxxxxxxx"
 github_user_name             = "ofirgan"
-github_workspace_repo_name   = "kandula"
-github_branch                = "mid-project"
-
-vpc_workspace_directory        = "/Terraform/workspaces/vpc"
-servers_workspace_directory    = "/Terraform/workspaces/servers"
-kubernetes_workspace_directory = "/Terraform/workspaces/kubernetes"
-
-github_aws_vpc_module_repo_name     = "terraform-aws-vpc"
-github_aws_servers_module_repo_name = "terraform-aws-servers"
 
 ##################################################################################
 # AWS Global
@@ -33,40 +20,16 @@ github_aws_servers_module_repo_name = "terraform-aws-servers"
 aws_access_key_id     = "xxxxxxxxxx"
 aws_secret_access_key = "xxxxxxxxx"
 aws_default_region    = "us-east-1"
-
-elb_account_id = "127311923021"
+elb_account_id        = "127311923021"
 # ELB Account ID - pick one according to region https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions
 
-owner_name   = "ofir"
-project_name = "kandula"
+private_key_file_path = "C:\\Downloads\\OpsSchool\\Private-Keys\\Kandula_Private_Key.pem"
 
-##################################################################################
-# AWS VPC
-##################################################################################
-vpc_cidr                 = "10.0.0.0/16"
-availability_zones_count = 2
-
-##################################################################################
-# AWS EC2
-##################################################################################
-instance_type         = "t2.micro"
-ec2_user_name         = "ubuntu"
-consul_dc_name        = "kandula-dc"
-consul_servers_count  = 3
-jenkins_nodes_count   = 2
-s3_logs_bucket_name   = "kandula-alb-logs-bucket"
-private_key_file_path = "C:\\Private-Keys\\Kandula_Private_Key.pem"
-
-##################################################################################
-# AWS K8s
-##################################################################################
-k8s_cluster_name              = "k8s_cluster"
-k8s_service_account_namespace = "default"
-k8s_service_account_name      = "sa-user"
+owner_name          = "ofir"
+instance_type       = "t2.micro"
+s3_logs_bucket_name = "ofirgan-kandula-alb-logs-bucket" # Must Be Uniq
 
 ##################################################################################
 # Slack
 ##################################################################################
-notification_triggers          = ["run:completed"]
-slack_notification_webhook_url = "https://hooks.slack.com/...."
-# Options: https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/notification_configuration#triggers
+slack_notification_webhook_url = "https://hooks.slack.com/services/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"
