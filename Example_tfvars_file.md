@@ -32,4 +32,4 @@ s3_logs_bucket_name = "ofirgan-kandula-alb-logs-bucket" # Must Be Uniq
 ##################################################################################
 # Slack
 ##################################################################################
-slack_notification_webhook_url = "https://hooks.slack.com/services/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"
+slack_notification_webhook_url = "https://hooks.slack.com/...."
