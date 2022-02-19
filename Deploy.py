@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from typing import Dict
 from urllib import response
 from markupsafe import string
@@ -22,7 +23,6 @@ def print_alb_dns_names():
 
     pass
 
-
 def print_jenkins_nodes_ip(ec2):
     running_instances = ec2.instances.filter(Filters=[
         {'Name': 'tag:service', 'Values': ['jenkins']},
@@ -37,7 +37,6 @@ def print_jenkins_nodes_ip(ec2):
         count += 1
     pass
 
-
 def get_bastion_host_ip(ec2, get_public_ip: bool):
     running_instances = ec2.instances.filter(Filters=[
         {'Name': 'tag:service_role', 'Values': ['bastion']},
@@ -49,7 +48,6 @@ def get_bastion_host_ip(ec2, get_public_ip: bool):
         else:
             return instance.private_ip_address
 
-
 def get_jenkins_server_ip(ec2):
     running_instances = ec2.instances.filter(Filters=[
         {'Name': 'tag:service', 'Values': ['jenkins']},
@@ -59,7 +57,6 @@ def get_jenkins_server_ip(ec2):
     for instance in running_instances:
         return instance.private_ip_address
 
-
 def get_ansible_server_ip(ec2):
     running_instances = ec2.instances.filter(Filters=[
         {'Name': 'tag:service', 'Values': ['ansible']},
@@ -68,7 +65,6 @@ def get_ansible_server_ip(ec2):
     ])
     for instance in running_instances:
         return instance.private_ip_address
-
 
 def get_consul_servers_amount(ec2):
     count = 0
@@ -80,7 +76,6 @@ def get_consul_servers_amount(ec2):
     for instance in running_instances:
         count = count + 1
     return count
-
 
 def ssh_client_connection(target_host_ip, ssh_user_name, private_key_file_path):
     try:
@@ -94,7 +89,6 @@ def ssh_client_connection(target_host_ip, ssh_user_name, private_key_file_path):
     except Exception:
         print(f"Error Connecting To: {0}".format(target_host_ip))
         exit()
-
 
 def ssh_client_connection_throgh_bastion_host(bastion_host_ssh_client, bastion_host_private_ip, target_host_ip, ssh_user_name, private_key_file_path):
     try:
@@ -116,11 +110,9 @@ def ssh_client_connection_throgh_bastion_host(bastion_host_ssh_client, bastion_h
         print(f"Error Connecting To: {0} Through Bastion Host".format(target_host_ip))
         exit()
 
-
 def close_ssh_session(host_ssh_client, session_name):
     host_ssh_client.close()
     print("Closed SSH Session To: {0}".format(session_name))
-
 
 def ssh_run_commands(target_ssh_client: paramiko.client.SSHClient, commands: list):
     for command in commands:
@@ -132,16 +124,13 @@ def ssh_run_commands(target_ssh_client: paramiko.client.SSHClient, commands: lis
                 break
             print(line, end="")
 
-
 def progress(filename, size, sent):
     sys.stdout.write("Copying: %s - Progress: %.2f%%   \n" %
                      (filename, float(sent)/float(size)*100))
 
-
 def scp_file_copy(ssh_session: paramiko.client.SSHClient, file: str, remote_path):
     with SCPClient(ssh_session.get_transport(), progress=progress) as scp:
         scp.put(file, remote_path=remote_path, recursive=True)
-
 
 def run_ansible_deployment(ansible_ssh_client: paramiko.client.SSHClient, tfvars_dict):
     os.chdir(sys.path[0])
@@ -187,7 +176,6 @@ def run_ansible_deployment(ansible_ssh_client: paramiko.client.SSHClient, tfvars
 
     pass
 
-
 def create_dict_from_tfvars_file(tfvars_file_path):
     os.chdir(sys.path[0])
 
@@ -211,7 +199,6 @@ def create_dict_from_tfvars_file(tfvars_file_path):
 
     return tfvars_dict
 
-
 def deploy_terraform(tfvars_file_path):
     os.chdir(sys.path[0])
     os.chdir("Terraform")
@@ -220,8 +207,6 @@ def deploy_terraform(tfvars_file_path):
         "terraform plan -var-file {} -out plan.tfstate -compact-warnings".format(tfvars_file_path))
     os.system("terraform apply plan.tfstate")
     os.chdir("..")
-
-
 
 def create_tfe_api_session(tfe_token : string):
     session = requests.Session()
@@ -237,12 +222,16 @@ def get_workspaces_names_list(session : requests.Session, organization_name : st
     response = session.get(
         f"https://app.terraform.io/api/v2/organizations/{organization_name}/workspaces"
     ).json()
+    
+    if 'errors' in response:
+        print(f"Can't Get Data from TFC Organization - {organization_name}")
+        exit()
+    else:
+        workspaces_names_list = []
+        for workspace in response['data']:
+            workspaces_names_list.append(workspace['attributes']['name'])
 
-    workspaces_names_list = []
-    for workspace in response['data']:
-        workspaces_names_list.append(workspace['attributes']['name'])
- 
-    return workspaces_names_list
+        return workspaces_names_list
 
 def get_workspace_vars_dict(session : requests.Session, organization_name : string , workspace_name : string):
     response = session.get(
@@ -256,7 +245,6 @@ def get_workspace_vars_dict(session : requests.Session, organization_name : stri
     return vars_dict
 
 def get_all_workspaces_vars_dict(session : requests.Session, organization_name : string ):
-
     workspaces_names_list = get_workspaces_names_list(session, organization_name)
 
     vars_dict_all = {}
@@ -266,7 +254,6 @@ def get_all_workspaces_vars_dict(session : requests.Session, organization_name :
 
     return vars_dict_all
 
-
 def get_workspace_id(session : requests.Session, organization_name : string, workspace_name):
     response = session.get(
         f"https://app.terraform.io/api/v2/organizations/{organization_name}/workspaces?search%5Bname%5D={workspace_name}"
@@ -275,7 +262,7 @@ def get_workspace_id(session : requests.Session, organization_name : string, wor
     workspace_id = response["data"][0]["id"]
     return workspace_id
 
-def plan_workspace(session : requests.Session, workspace_id : string):
+def run_workspace(session : requests.Session, workspace_id : string):
     payload = json.dumps(
         {
             "data": {
@@ -290,20 +277,41 @@ def plan_workspace(session : requests.Session, workspace_id : string):
 
     response = session.post("https://app.terraform.io/api/v2/runs", payload).json()
 
+    run_id = response["data"]["id"]    
+    return run_id
+
+def wait_run_to_be_in_status_x(session : requests.Session, run_id : string, run_end_status : string):
+    response = session.get(f"https://app.terraform.io/api/v2/runs/{run_id}").json()
+    run_status = response["data"]["attributes"]["status"]
+
+    while(run_status != run_end_status):
+        time.sleep(2)
+        
+        response = session.get(f"https://app.terraform.io/api/v2/runs/{run_id}").json()
+        run_status = response["data"]["attributes"]["status"]
+
+        if(run_status == "errored"):
+            print("Run Errored")
+            exit()
     pass
 
-def apply_workspace(workspace_id):
+def apply_run(session : requests.Session, run_id : string):
+    response = session.post(f"https://app.terraform.io/api/v2/runs/{run_id}/actions/apply").json()
     pass
 
-def plan_and_apply_workspace(session : requests.Session, organization_name : string, workspace_name : string):
+def run_and_apply_workspace(session : requests.Session, organization_name : string, workspace_name : string):
     workspace_id = get_workspace_id(session, organization_name, workspace_name)
-    plan_id =  plan_workspace(session, workspace_id)
-    apply_workspace(session, plan_id)
+    run_id =  run_workspace(session, workspace_id)
+    wait_run_to_be_in_status_x(session, run_id, "planned")
+    print(f"Workspace {workspace_name} Planned")
+    apply_run(session, run_id)
+    wait_run_to_be_in_status_x(session, run_id, "applied")
+    print(f"Workspace {workspace_name} Applied")
     pass
 
-def plan_and_apply_workspaces(session : requests.Session, organization_name : string, workspaces_list : list):
+def run_and_apply_workspaces(session : requests.Session, organization_name : string, workspaces_list : list):
     for workspace in workspaces_list:
-        plan_and_apply_workspace(session, organization_name, workspace)
+        run_and_apply_workspace(session, organization_name, workspace)
     pass
 
 if __name__ == '__main__':
@@ -318,7 +326,7 @@ if __name__ == '__main__':
 
     workspaces_to_apply_list = [vars_dict["tfe_vpc_workspace_name"], vars_dict["tfe_servers_workspace_name"], vars_dict["tfe_kubernetes_workspace_name"]]
 
-    plan_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list)
+    run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list)
 
     print("End")
     exit()
