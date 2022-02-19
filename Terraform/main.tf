@@ -138,12 +138,12 @@ module "kubernetes_tfe_module" {
 # Workspace Triggers
 ##################################################################################
 
-resource "tfe_run_trigger" "servers_auto_run_after_vpc" {
-  workspace_id  = module.servers_tfe_module.workspace_id
-  sourceable_id = module.vpc_tfe_module.workspace_id
-}
+# resource "tfe_run_trigger" "servers_auto_run_after_vpc" {
+#   workspace_id  = module.servers_tfe_module.workspace_id
+#   sourceable_id = module.vpc_tfe_module.workspace_id
+# }
 
-resource "tfe_run_trigger" "kubernetes_auto_run_after_servers" {
-  workspace_id  = module.kubernetes_tfe_module.workspace_id
-  sourceable_id = module.servers_tfe_module.workspace_id
-}
+# resource "tfe_run_trigger" "kubernetes_auto_run_after_servers" {
+#   workspace_id  = module.kubernetes_tfe_module.workspace_id
+#   sourceable_id = module.servers_tfe_module.workspace_id
+# }
