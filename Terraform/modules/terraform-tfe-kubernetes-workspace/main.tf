@@ -81,6 +81,14 @@ resource "tfe_variable" "tfe_servers_workspace_name" {
   category     = "terraform"
 }
 
+resource "tfe_variable" "tfe_kubernetes_workspace_name" {
+  key          = "tfe_kubernetes_workspace_name"
+  value        = var.tfe_kubernetes_workspace_name
+  description  = "Servers Workspace Name"
+  workspace_id = tfe_workspace.kubernetes.id
+  category     = "terraform"
+}
+
 
 resource "tfe_variable" "tfe_organization_name" {
   key          = "tfe_organization_name"
