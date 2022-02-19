@@ -65,7 +65,7 @@ variable "github_workspace_repo_name" {
 variable "github_branch" {
   description = "Github Workspace Branch Name"
   type        = string
-  default     = "mid-project"
+  default     = "final-project"
 }
 
 variable "vpc_workspace_directory" {
