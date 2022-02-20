@@ -339,22 +339,26 @@ def run_and_apply_workspaces(session : requests.Session, organization_name : str
         run_and_apply_workspace(session, organization_name, workspace, is_destroy)
     pass
 
+def deploy_or_destroy_promt():
+    print("Press: \n(1) To Deploy \n(2) To Destroy")
+    input_str = str(input())
+
+    while input_str != "1" and input_str != "2":
+        print("Press: \n(1) To Deploy \n(2) To Destroy")
+        input_str = str(input())
+    
+    is_deploy = input_str == "1"
+    return is_deploy
+
 if __name__ == '__main__':
     tfvars_file_path = sys.path[0] + "//terraform.tfvars"
     vars_dict = create_dict_from_tfvars_file(tfvars_file_path)
     
     session = create_tfe_api_session(vars_dict["tfe_token"]) 
 
-    print("Enter: \n1 -> Deploy \n2 -> Destroy \n--> ")
-    input_str = str(input())
+    is_destroy_plan = not deploy_or_destroy_promt()
 
-    while input_str != "1" and input_str != "2":
-        print("\nEnter: \n1 -> Deploy \n2 -> Destroy \n--> ")
-        input_str = str(input())
-
-    Destroy_plan = input_str == "2"
-
-    if Destroy_plan:
+    if is_destroy_plan:
         print("Destroying Everything !!!")
         vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
         workspaces_to_destroy_list = [
