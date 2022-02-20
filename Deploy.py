@@ -23,8 +23,8 @@ def print_alb_dns_names():
 
     pass
 
-def print_jenkins_nodes_ip(ec2):
-    running_instances = ec2.instances.filter(Filters=[
+def print_jenkins_nodes_ip(boto3_ec2):
+    running_instances = boto3_ec2.instances.filter(Filters=[
         {'Name': 'tag:service', 'Values': ['jenkins']},
         {'Name': 'tag:instance_type', 'Values': ['node']},
         {'Name': 'instance-state-name', 'Values': ['running']}
@@ -37,8 +37,8 @@ def print_jenkins_nodes_ip(ec2):
         count += 1
     pass
 
-def get_bastion_host_ip(ec2, get_public_ip: bool):
-    running_instances = ec2.instances.filter(Filters=[
+def get_bastion_host_ip(boto3_ec2, get_public_ip: bool):
+    running_instances = boto3_ec2.instances.filter(Filters=[
         {'Name': 'tag:service_role', 'Values': ['bastion']},
         {'Name': 'instance-state-name', 'Values': ['running']},
     ])
@@ -48,8 +48,8 @@ def get_bastion_host_ip(ec2, get_public_ip: bool):
         else:
             return instance.private_ip_address
 
-def get_jenkins_server_ip(ec2):
-    running_instances = ec2.instances.filter(Filters=[
+def get_jenkins_server_ip(boto3_ec2):
+    running_instances = boto3_ec2.instances.filter(Filters=[
         {'Name': 'tag:service', 'Values': ['jenkins']},
         {'Name': 'tag:instance_type', 'Values': ['server']},
         {'Name': 'instance-state-name', 'Values': ['running']}
@@ -57,8 +57,8 @@ def get_jenkins_server_ip(ec2):
     for instance in running_instances:
         return instance.private_ip_address
 
-def get_ansible_server_ip(ec2):
-    running_instances = ec2.instances.filter(Filters=[
+def get_ansible_server_ip(boto3_ec2):
+    running_instances = boto3_ec2.instances.filter(Filters=[
         {'Name': 'tag:service', 'Values': ['ansible']},
         {'Name': 'tag:instance_type', 'Values': ['server']},
         {'Name': 'instance-state-name', 'Values': ['running']}
@@ -66,9 +66,9 @@ def get_ansible_server_ip(ec2):
     for instance in running_instances:
         return instance.private_ip_address
 
-def get_consul_servers_amount(ec2):
+def get_consul_servers_amount(boto3_ec2):
     count = 0
-    running_instances = ec2.instances.filter(Filters=[
+    running_instances = boto3_ec2.instances.filter(Filters=[
         {'Name': 'tag:service_role', 'Values': ['service_discovery']},
         {'Name': 'tag:instance_type', 'Values': ['server']},
         {'Name': 'instance-state-name', 'Values': ['running']}
@@ -132,15 +132,15 @@ def scp_file_copy(ssh_session: paramiko.client.SSHClient, file: str, remote_path
     with SCPClient(ssh_session.get_transport(), progress=progress) as scp:
         scp.put(file, remote_path=remote_path, recursive=True)
 
-def run_ansible_deployment(ansible_ssh_client: paramiko.client.SSHClient, tfvars_dict):
+def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClient, vars_dict):
     os.chdir(sys.path[0])
     ansible_folder = "Ansible"
 
     consul_dc_name = "kandula-dc"
 
-    consul_servers_count = tfvars_dict['consul_servers_count']
-    k8s_cluster_name = tfvars_dict['k8s_cluster_name']
-    aws_default_region = tfvars_dict['aws_default_region']
+    consul_servers_count = vars_dict['consul_servers_count']
+    k8s_cluster_name = vars_dict['k8s_cluster_name']
+    aws_default_region = vars_dict['aws_default_region']
 
     scp_file_copy(ansible_ssh_client,
                   private_key_file_path, '/home/ubuntu/.ssh/id_rsa')
@@ -174,6 +174,25 @@ def run_ansible_deployment(ansible_ssh_client: paramiko.client.SSHClient, tfvars
     ssh_run_commands(ansible_ssh_client, install_ansible_modules)
     ssh_run_commands(ansible_ssh_client, run_ansible_playbook_commands)
 
+    pass
+
+def ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path):
+    bastion_host_public_ip = get_bastion_host_ip(boto3_ec2, True)
+    bastion_host_private_ip = get_bastion_host_ip(boto3_ec2, False)
+    ansible_server_ip = get_ansible_server_ip(boto3_ec2)
+
+    bastion_ssh_client = ssh_client_connection(
+        bastion_host_public_ip, ec2_user_name, private_key_file_path)
+
+    ansible_ssh_client = ssh_client_connection_throgh_bastion_host(
+        bastion_ssh_client, bastion_host_private_ip, ansible_server_ip, ec2_user_name, private_key_file_path)
+
+    ssh_run_commands(bastion_ssh_client, ["sudo sed -i 's/#   StrictHostKeyChecking ask/    StrictHostKeyChecking no/g' /etc/ssh/ssh_config"])
+
+    ansible_install_configure_deploy(ansible_ssh_client, vars_dict)
+
+    close_ssh_session(ansible_ssh_client, "Ansible Server")
+    close_ssh_session(bastion_ssh_client, "Bastion Host")
     pass
 
 def create_dict_from_tfvars_file(tfvars_file_path):
@@ -357,36 +376,17 @@ if __name__ == '__main__':
         ]
         run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
         exit()
-        private_key_file_path = vars_dict['private_key_file_path']
+        boto3_ec2 = boto3.resource('ec2')
         ec2_user_name = "ubuntu"
-        ec2 = boto3.resource('ec2')
+        private_key_file_path = vars_dict['private_key_file_path']
 
-        bastion_host_public_ip = get_bastion_host_ip(ec2, True)
-        bastion_host_private_ip = get_bastion_host_ip(ec2, False)
-        ansible_server_ip = get_ansible_server_ip(ec2)
-        jenkins_server_ip = get_jenkins_server_ip(ec2)
-
-        bastion_ssh_client = ssh_client_connection(
-            bastion_host_public_ip, ec2_user_name, private_key_file_path)
-
-        ansible_ssh_client = ssh_client_connection_throgh_bastion_host(
-            bastion_ssh_client, bastion_host_private_ip, ansible_server_ip, ec2_user_name, private_key_file_path)
-
-        ssh_run_commands(bastion_ssh_client, [
-            "sudo sed -i 's/#   StrictHostKeyChecking ask/    StrictHostKeyChecking no/g' /etc/ssh/ssh_config"
-        ]
-        )
-
-        run_ansible_deployment(ansible_ssh_client, vars_dict)
-
-        close_ssh_session(ansible_ssh_client, "Ansible Server")
-        close_ssh_session(bastion_ssh_client, "Bastion Host")
+        ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
 
         print("\nServers:")
-        print("bastion_host_public_ip: {}".format(bastion_host_public_ip))
-        print("ansible_server_ip: {}".format(ansible_server_ip))
-        print("jenkins_server_ip: {}".format(jenkins_server_ip))
-        print_jenkins_nodes_ip(ec2)
+        print(f"bastion_host_public_ip: {get_bastion_host_ip(boto3_ec2,True)}")
+        print(f"ansible_server_ip: {get_ansible_server_ip(boto3_ec2)}")
+        print(f"jenkins_server_ip: {get_jenkins_server_ip(boto3_ec2)}")
+        print_jenkins_nodes_ip(boto3_ec2)
         print_alb_dns_names()
 
     print("The End")
