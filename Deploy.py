@@ -203,9 +203,14 @@ def deploy_terraform(tfvars_file_path):
     os.chdir(sys.path[0])
     os.chdir("Terraform")
     os.system("terraform init")
-    os.system(
-        "terraform plan -var-file {} -out plan.tfstate -compact-warnings".format(tfvars_file_path))
+    os.system(f"terraform plan -var-file {tfvars_file_path} -out plan.tfstate -compact-warnings")
     os.system("terraform apply plan.tfstate")
+    os.chdir("..")
+
+def destroy_terraform(tfvars_file_path):
+    os.chdir(sys.path[0])
+    os.chdir("Terraform")
+    os.system(f"terraform destroy -var-file {tfvars_file_path} -compact-warnings")
     os.chdir("..")
 
 def create_tfe_api_session(tfe_token : string):
@@ -262,11 +267,11 @@ def get_workspace_id(session : requests.Session, organization_name : string, wor
     workspace_id = response["data"][0]["id"]
     return workspace_id
 
-def run_workspace(session : requests.Session, workspace_id : string):
+def run_workspace(session : requests.Session, workspace_id : string, is_destroy : bool):
     payload = json.dumps(
         {
             "data": {
-                "attributes": {"is-destroy": False},
+                "attributes": {"is-destroy": is_destroy},
                 "type": "runs",
                 "relationships": {
                     "workspace": {"data": {"type": "workspaces", "id": workspace_id}}
@@ -299,80 +304,90 @@ def apply_run(session : requests.Session, run_id : string):
     response = session.post(f"https://app.terraform.io/api/v2/runs/{run_id}/actions/apply").json()
     pass
 
-def run_and_apply_workspace(session : requests.Session, organization_name : string, workspace_name : string):
+def run_and_apply_workspace(session : requests.Session, organization_name : string, workspace_name : string, is_destroy : bool):
+    destroy_or_deploy_txt = 'Destroy' if is_destroy else 'Deploy'
     workspace_id = get_workspace_id(session, organization_name, workspace_name)
-    run_id =  run_workspace(session, workspace_id)
+    run_id =  run_workspace(session, workspace_id, is_destroy)
     wait_run_to_be_in_status_x(session, run_id, "planned")
-    print(f"Workspace {workspace_name} Planned")
+    print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} Planned")
     apply_run(session, run_id)
     wait_run_to_be_in_status_x(session, run_id, "applied")
-    print(f"Workspace {workspace_name} Applied")
+    print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} Applied")
     pass
 
-def run_and_apply_workspaces(session : requests.Session, organization_name : string, workspaces_list : list):
+def run_and_apply_workspaces(session : requests.Session, organization_name : string, workspaces_list : list, is_destroy : bool):
     for workspace in workspaces_list:
-        run_and_apply_workspace(session, organization_name, workspace)
+        run_and_apply_workspace(session, organization_name, workspace, is_destroy)
     pass
 
 if __name__ == '__main__':
     tfvars_file_path = sys.path[0] + "//terraform.tfvars"
     vars_dict = create_dict_from_tfvars_file(tfvars_file_path)
-
-    deploy_terraform(tfvars_file_path)
-
+    
     session = create_tfe_api_session(vars_dict["tfe_token"]) 
-    
-    vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
 
-    workspaces_to_apply_list = [vars_dict["tfe_vpc_workspace_name"], vars_dict["tfe_servers_workspace_name"], vars_dict["tfe_kubernetes_workspace_name"]]
-
-    run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list)
-
-    print("End")
-    exit()
-    
-    print("Please apply plans on Terraform Cloud VPC -> Servers -> Kubernetes")
-    print("Did all plans apllied? -> (yes / no)")
+    print("Enter: \n1 -> Deploy \n2 -> Destroy \n--> ")
     input_str = str(input())
-    
-    if input_str == "no":
-        exit()
 
-    while input_str != "yes":
-        print("Enter 'yes' when plans applied")
+    while input_str != "1" and input_str != "2":
+        print("\nEnter: \n1 -> Deploy \n2 -> Destroy \n--> ")
         input_str = str(input())
-        if input_str == "no":
-            exit()
-        
 
-    private_key_file_path = vars_dict['private_key_file_path']
-    ec2_user_name = "ubuntu"
-    ec2 = boto3.resource('ec2')
+    Destroy_plan = input_str == "2"
 
-    bastion_host_public_ip = get_bastion_host_ip(ec2, True)
-    bastion_host_private_ip = get_bastion_host_ip(ec2, False)
-    ansible_server_ip = get_ansible_server_ip(ec2)
-    jenkins_server_ip = get_jenkins_server_ip(ec2)
+    if Destroy_plan:
+        print("Destroying Everything !!!")
+        vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
+        workspaces_to_destroy_list = [
+            # vars_dict["tfe_kubernetes_workspace_name"],
+            vars_dict["tfe_servers_workspace_name"], 
+            vars_dict["tfe_vpc_workspace_name"]
+        ]
+        run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_destroy_list, True)
+        destroy_terraform(tfvars_file_path)
+    
+    else:
+        print("Deploying Everything :)")
+        deploy_terraform(tfvars_file_path)
+        vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
+        workspaces_to_apply_list = [
+            vars_dict["tfe_vpc_workspace_name"]
+            ,vars_dict["tfe_servers_workspace_name"]
+            # ,vars_dict["tfe_kubernetes_workspace_name"]
+        ]
+        run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
+        exit()
+        private_key_file_path = vars_dict['private_key_file_path']
+        ec2_user_name = "ubuntu"
+        ec2 = boto3.resource('ec2')
 
-    bastion_ssh_client = ssh_client_connection(
-        bastion_host_public_ip, ec2_user_name, private_key_file_path)
+        bastion_host_public_ip = get_bastion_host_ip(ec2, True)
+        bastion_host_private_ip = get_bastion_host_ip(ec2, False)
+        ansible_server_ip = get_ansible_server_ip(ec2)
+        jenkins_server_ip = get_jenkins_server_ip(ec2)
 
-    ansible_ssh_client = ssh_client_connection_throgh_bastion_host(
-        bastion_ssh_client, bastion_host_private_ip, ansible_server_ip, ec2_user_name, private_key_file_path)
+        bastion_ssh_client = ssh_client_connection(
+            bastion_host_public_ip, ec2_user_name, private_key_file_path)
 
-    ssh_run_commands(bastion_ssh_client, [
-        "sudo sed -i 's/#   StrictHostKeyChecking ask/    StrictHostKeyChecking no/g' /etc/ssh/ssh_config"
-    ]
-    )
+        ansible_ssh_client = ssh_client_connection_throgh_bastion_host(
+            bastion_ssh_client, bastion_host_private_ip, ansible_server_ip, ec2_user_name, private_key_file_path)
 
-    run_ansible_deployment(ansible_ssh_client, vars_dict)
+        ssh_run_commands(bastion_ssh_client, [
+            "sudo sed -i 's/#   StrictHostKeyChecking ask/    StrictHostKeyChecking no/g' /etc/ssh/ssh_config"
+        ]
+        )
 
-    close_ssh_session(ansible_ssh_client, "Ansible Server")
-    close_ssh_session(bastion_ssh_client, "Bastion Host")
+        run_ansible_deployment(ansible_ssh_client, vars_dict)
 
-    print("\nServers:")
-    print("bastion_host_public_ip: {}".format(bastion_host_public_ip))
-    print("ansible_server_ip: {}".format(ansible_server_ip))
-    print("jenkins_server_ip: {}".format(jenkins_server_ip))
-    print_jenkins_nodes_ip(ec2)
-    print_alb_dns_names()
+        close_ssh_session(ansible_ssh_client, "Ansible Server")
+        close_ssh_session(bastion_ssh_client, "Bastion Host")
+
+        print("\nServers:")
+        print("bastion_host_public_ip: {}".format(bastion_host_public_ip))
+        print("ansible_server_ip: {}".format(ansible_server_ip))
+        print("jenkins_server_ip: {}".format(jenkins_server_ip))
+        print_jenkins_nodes_ip(ec2)
+        print_alb_dns_names()
+
+    print("The End")
+    exit()
