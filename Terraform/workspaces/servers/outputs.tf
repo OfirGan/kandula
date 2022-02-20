@@ -33,6 +33,16 @@ output "ansible_server_private_ip" {
   value       = module.servers.ansible_server_private_ip
 }
 
+output "prometheus_server_private_ip" {
+  description = "Prometheus Server Private IP"
+  value       = module.servers.prometheus_server_private_ip
+}
+
+output "grafana_server_private_ip" {
+  description = "Grafana Server Private IP"
+  value       = module.servers.grafana_server_private_ip
+}
+
 output "consul_alb_public_dns" {
   description = "Consul ALB Public DNS name"
   value       = module.servers.consul_alb_public_dns
