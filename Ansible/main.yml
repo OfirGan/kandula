@@ -39,5 +39,8 @@
     - role: install-prometheus
       when: service == "prometheus"
 
+    - role: install-grafana
+      when: service == "grafana"
+
     - role: install-jenkins
       when: service == "jenkins"

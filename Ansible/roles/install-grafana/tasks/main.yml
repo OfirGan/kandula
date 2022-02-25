@@ -1,2 +1,28 @@
 ---
 # tasks file for install-grafana
+- name: Install Docker
+  include_role:
+    name: install-docker
+
+- name: Create Grafana Config directory
+  file:
+    path: /etc/grafana/
+    state: directory
+    group: "{{ hostvars[inventory_hostname]['docker_group'] }}"
+    mode: "0777"
+
+- name: Copy Grafana Configuration
+  copy:
+    src: grafana.ini
+    dest: /etc/grafana/grafana.ini
+
+- name: Start Grafana Container
+  community.docker.docker_container:
+    name: grafana
+    image: grafana/grafana
+    state: started
+    restart_policy: always
+    network_mode: host
+    volumes:
+      - /etc/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - /var/run/docker.sock:/var/run/docker.sock
