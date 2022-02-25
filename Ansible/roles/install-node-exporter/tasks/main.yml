@@ -1,2 +1,67 @@
 ---
 # tasks file for install-node-exporter
+- name: Download node_exporter
+  get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_ver }}/node_exporter-{{ node_exporter_ver }}.linux-amd64.tar.gz
+    dest: /tmp/node_exporter-{{ node_exporter_ver }}.linux-amd64.tar.gz
+
+- name: Extract node_exporter
+  ansible.builtin.unarchive:
+    src: /tmp/node_exporter-{{ node_exporter_ver }}.linux-amd64.tar.gz
+    dest: /tmp
+
+- name: Copy service file
+  ansible.builtin.copy:
+    src: /tmp/node_exporter-{{ node_exporter_ver }}.linux-amd64/node_exporter
+    dest: /usr/local/bin/node_exporter
+
+- name: Create node_exporter group
+  ansible.builtin.group:
+    name: node_exporter
+    state: present
+
+- name: Create node_exporter user
+  ansible.builtin.user:
+    name: node_exporter
+    groups: node_exporter
+    shell: /bin/false
+    create_home: no
+
+- name: Change node_exporter bin file owner
+  ansible.builtin.file:
+    path: /usr/local/bin/node_exporter
+    owner: node_exporter
+    group: node_exporter
+    mode: u+x
+
+- name: Create textfile collector directory
+  ansible.builtin.file:
+    path: /var/lib/node_exporter/textfile_collector
+    state: directory
+
+- name: Change lib node_exporter directory owner
+  ansible.builtin.file:
+    path: /var/lib/node_exporter
+    owner: node_exporter
+    group: node_exporter
+
+- name: Change lib textfile_collector directory owner
+  ansible.builtin.file:
+    path: /var/lib/node_exporter/textfile_collector
+    owner: node_exporter
+    group: node_exporter
+
+- name: Copy node_exporter service file
+  ansible.builtin.copy:
+    src: node_exporter.service
+    dest: /etc/systemd/system/node_exporter.service
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Start node_exporter service
+  ansible.builtin.systemd:
+    state: started
+    name: node_exporter
+    enabled: yes

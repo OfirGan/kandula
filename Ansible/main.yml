@@ -33,5 +33,8 @@
   roles:
     - role: install-consul
       when: is_consul_monitored == true
+
+    - role: install-node-exporter
+
     - role: install-jenkins
       when: service == "jenkins"
