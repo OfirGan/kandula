@@ -1,2 +1,28 @@
 ---
 # tasks file for install-prometheus
+- name: Install Docker
+  include_role:
+    name: install-docker
+
+- name: Create Prometheus Config directory
+  file:
+    path: /home/ubuntu/prometheus/
+    state: directory
+    group: "{{ hostvars[inventory_hostname]['docker_group'] }}"
+    mode: "0777"
+
+- name: Copy Prometheus Configuration
+  copy:
+    src: prometheus.yml
+    dest: /home/ubuntu/prometheus/prometheus.yml
+
+- name: Start Prometheus Container
+  community.docker.docker_container:
+    name: prometheus
+    image: prom/prometheus
+    state: started
+    restart_policy: always
+    network_mode: host
+    volumes:
+      - /home/ubuntu/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /var/run/docker.sock:/var/run/docker.sock
