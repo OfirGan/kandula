@@ -133,11 +133,8 @@ def scp_file_copy(ssh_session: paramiko.client.SSHClient, file: str, remote_path
         scp.put(file, remote_path=remote_path, recursive=True)
 
 def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClient, vars_dict):
-    os.chdir(sys.path[0])
-    ansible_folder = "Ansible"
-
+    ansible_folder = "/home/ubuntu/kandula/Ansible"
     consul_dc_name = "kandula-dc"
-
     consul_servers_count = vars_dict['consul_servers_count']
     k8s_cluster_name = vars_dict['k8s_cluster_name']
     aws_default_region = vars_dict['aws_default_region']
@@ -145,14 +142,12 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
     scp_file_copy(ansible_ssh_client,
                   private_key_file_path, '/home/ubuntu/.ssh/id_rsa')
 
-    scp_file_copy(ansible_ssh_client, {ansible_folder}, '~/')
-
-    fix_ssh_config = [
+    configure_ssh = [
         "chmod 600 /home/ubuntu/.ssh/id_rsa",
         "sudo sed -i 's/#   StrictHostKeyChecking ask/    StrictHostKeyChecking no/g' /etc/ssh/ssh_config"
     ]
 
-    install_ansible_commands = [
+    install_ansible = [
         "sudo apt update", "sudo apt install software-properties-common",
         "sudo add-apt-repository --yes --update ppa:ansible/ansible",
         "sudo apt install ansible -y",
@@ -165,14 +160,22 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
         "ansible-galaxy collection install community.docker"
     ]
 
-    run_ansible_playbook_commands = [
+    clone_ansible_repo = [
+        "git clone -b final-project https://github.com/OfirGan/kandula.git /home/ubuntu/kandula"
+    ]
+
+    run_ansible_playbook = [
         f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml -e "consul_servers_count={consul_servers_count} consul_dc_name={consul_dc_name} eks_cluster_name={k8s_cluster_name} aws_default_region={aws_default_region}"'
     ]
 
-    ssh_run_commands(ansible_ssh_client, fix_ssh_config)
-    ssh_run_commands(ansible_ssh_client, install_ansible_commands)
-    ssh_run_commands(ansible_ssh_client, install_ansible_modules)
-    ssh_run_commands(ansible_ssh_client, run_ansible_playbook_commands)
+
+    ssh_run_commands(ansible_ssh_client, 
+        configure_ssh + 
+        install_ansible + 
+        install_ansible_modules + 
+        clone_ansible_repo + 
+        run_ansible_playbook
+    )
 
     pass
 
