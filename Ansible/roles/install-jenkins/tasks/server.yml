@@ -3,7 +3,7 @@
   file:
     path: /home/ubuntu/jenkins/config
     state: directory
-    group: "{{ docker_group }}"
+    group: "{{ hostvars[inventory_hostname]['docker_group'] }}"
     mode: "0777"
 
 - name: Start Jenkins Container
