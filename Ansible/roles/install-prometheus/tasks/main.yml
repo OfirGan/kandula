@@ -6,7 +6,7 @@
 
 - name: Create Prometheus Config directory
   file:
-    path: /home/ubuntu/prometheus/
+    path: /etc/prometheus/
     state: directory
     group: "{{ hostvars[inventory_hostname]['docker_group'] }}"
     mode: "0777"
@@ -14,7 +14,7 @@
 - name: Copy Prometheus Configuration
   copy:
     src: prometheus.yml
-    dest: /home/ubuntu/prometheus/prometheus.yml
+    dest: /etc/prometheus/prometheus.yml
 
 - name: Start Prometheus Container
   community.docker.docker_container:
@@ -24,5 +24,5 @@
     restart_policy: always
     network_mode: host
     volumes:
-      - /home/ubuntu/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - /var/run/docker.sock:/var/run/docker.sock
