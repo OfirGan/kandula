@@ -1,7 +1,7 @@
 ---
 # tasks file for install-node-exporter
 - name: Download node_exporter
-  get_url:
+  ansible.builtin.get_url:
     url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_ver }}/node_exporter-{{ node_exporter_ver }}.linux-amd64.tar.gz
     dest: /tmp/node_exporter-{{ node_exporter_ver }}.linux-amd64.tar.gz
 
