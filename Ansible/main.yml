@@ -36,5 +36,8 @@
 
     - role: install-node-exporter
 
+    - role: install-prometheus
+      when: service == "prometheus"
+
     - role: install-jenkins
       when: service == "jenkins"
