@@ -49,3 +49,11 @@
     groups: "{{ docker_group }}"
     append: yes
   with_items: "{{ docker_users }}"
+
+- name: Export docker_users variable as 'host-fact' type variable
+  set_fact:
+    docker_users: "{{ docker_users }}"
+
+- name: Export docker_group variable as 'host-fact' type variable
+  set_fact:
+    docker_group: "{{ docker_group }}"
