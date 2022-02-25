@@ -1,6 +1,7 @@
 ---
-- include_tasks: docker.yml
-  name: Install Docker
+- name: Install Docker
+  include_role:
+    name: install-docker
 
 - include_tasks: kubectl.yml
   name: Install Kubernetes
