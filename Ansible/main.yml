@@ -36,6 +36,9 @@
 
     - role: install-node-exporter
 
+    - role: install-docker
+      when: (service == "prometheus") or (service == "grafana") or (service == "jenkins")
+
     - role: install-prometheus
       when: service == "prometheus"
 

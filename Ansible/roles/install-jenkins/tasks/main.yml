@@ -1,8 +1,4 @@
 ---
-- name: Install Docker
-  include_role:
-    name: install-docker
-
 - include_tasks: kubectl.yml
   name: Install Kubernetes
   when: instance_type == "node"

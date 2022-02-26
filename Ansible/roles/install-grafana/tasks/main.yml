@@ -1,9 +1,5 @@
 ---
 # tasks file for install-grafana
-- name: Install Docker
-  include_role:
-    name: install-docker
-
 - name: Create Grafana Config directory
   file:
     path: /etc/grafana/
