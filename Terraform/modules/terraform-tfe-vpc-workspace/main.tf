@@ -122,3 +122,21 @@ resource "tfe_variable" "project_name" {
   workspace_id = resource.tfe_workspace.vpc_workspace.id
   category     = "terraform"
 }
+
+resource "tfe_variable" "tls_self_signed_cert_pem_content" {
+  key          = "tls_self_signed_cert_pem_content"
+  value        = var.tls_self_signed_cert_pem_content
+  sensitive    = "true"
+  description  = "Certificate PEM Content"
+  workspace_id = tfe_workspace.vpc_workspace.id
+  category     = "terraform"
+}
+
+resource "tfe_variable" "cert_private_key_pem_content" {
+  key          = "cert_private_key_pem_content"
+  value        = var.cert_private_key_pem_content
+  sensitive    = "true"
+  description  = "Certificate Private Key PEM Content"
+  workspace_id = tfe_workspace.servers_workspace.id
+  category     = "terraform"
+}

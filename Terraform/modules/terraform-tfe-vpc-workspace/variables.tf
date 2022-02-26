@@ -110,3 +110,14 @@ variable "project_name" {
   description = "Project Name"
   type        = string
 }
+
+variable "tls_self_signed_cert_pem_content" {
+  description = "Certificate PEM Content"
+  sensitive   = true
+
+}
+
+variable "cert_private_key_pem_content" {
+  description = "Certificate Private Key PEM Content"
+  sensitive   = true
+}

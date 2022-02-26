@@ -34,7 +34,8 @@ module "servers" {
   project_name = var.project_name
   owner_name   = var.owner_name
 
-  aws_server_key_name         = var.aws_server_key_name
-  alb_certificate             = var.alb_certificate
-  alb_certificate_private_key = var.alb_certificate_private_key
+  aws_server_key_name = var.aws_server_key_name
+
+  aws_iam_server_certificate_arn             = data.terraform_remote_state.vpc.outputs.aws_iam_server_certificate_arn
+  ec2_describe_instances_instance_profile_id = data.terraform_remote_state.vpc.outputs.ec2_describe_instances_instance_profile_id
 }

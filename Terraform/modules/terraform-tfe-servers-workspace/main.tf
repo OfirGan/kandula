@@ -182,21 +182,3 @@ resource "tfe_variable" "aws_server_key_name" {
   workspace_id = tfe_workspace.servers_workspace.id
   category     = "terraform"
 }
-
-resource "tfe_variable" "alb_certificate" {
-  key          = "alb_certificate"
-  value        = var.alb_certificate
-  sensitive    = "true"
-  description  = "Certificate PEM"
-  workspace_id = tfe_workspace.servers_workspace.id
-  category     = "terraform"
-}
-
-resource "tfe_variable" "alb_certificate_private_key" {
-  key          = "alb_certificate_private_key"
-  value        = var.alb_certificate_private_key
-  sensitive    = "true"
-  description  = "Certificate Private Key PEM"
-  workspace_id = tfe_workspace.servers_workspace.id
-  category     = "terraform"
-}

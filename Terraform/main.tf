@@ -111,6 +111,9 @@ module "vpc_tfe_module" {
   vpc_cidr                 = var.vpc_cidr
   availability_zones_count = var.availability_zones_count
   project_name             = var.project_name
+
+  cert_private_key_pem_content     = data.local_file.certificate_private_key.content
+  tls_self_signed_cert_pem_content = data.local_file.certificate.content
 }
 
 module "servers_tfe_module" {
@@ -142,9 +145,6 @@ module "servers_tfe_module" {
   jenkins_nodes_count  = var.jenkins_nodes_count
 
   aws_server_key_name = aws_key_pair.server_key.key_name
-
-  alb_certificate_private_key = data.local_file.certificate_private_key.content
-  alb_certificate             = data.local_file.certificate.content
 
   project_name = var.project_name
   owner_name   = var.owner_name

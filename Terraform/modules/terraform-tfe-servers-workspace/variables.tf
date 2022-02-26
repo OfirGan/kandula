@@ -153,10 +153,16 @@ variable "aws_server_key_name" {
   type        = string
 }
 
-variable "alb_certificate" {
-  description = "Certificate PEM"
+##################################################################################
+# Certificate
+##################################################################################
+variable "aws_iam_server_certificate_arn" {
+  description = "AWS IAM Server Certificate ARN For ALBs"
 }
 
-variable "alb_certificate_private_key" {
-  description = "Certificate Private Key PEM"
+##################################################################################
+# IAM
+##################################################################################
+variable "ec2_describe_instances_instance_profile_id" {
+  description = "EC2 Describe Instances Instance Profile ID"
 }

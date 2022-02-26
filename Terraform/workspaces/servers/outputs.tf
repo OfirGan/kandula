@@ -52,8 +52,3 @@ output "jenkins_alb_public_dns" {
   description = "Jenkins ALB Public DNS name"
   value       = module.servers.jenkins_alb_public_dns
 }
-
-output "iam_role_arn" {
-  description = "Describe Instances Role ARN"
-  value       = module.servers.iam_role_arn
-}
