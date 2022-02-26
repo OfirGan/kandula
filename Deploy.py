@@ -372,12 +372,14 @@ if __name__ == '__main__':
             ,vars_dict["tfe_servers_workspace_name"]
             # ,vars_dict["tfe_kubernetes_workspace_name"]
         ]
+        print("\nDeploying Terraform Cloud Workspaces")
         run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
-        exit()
+        
         boto3_ec2 = boto3.resource('ec2')
         ec2_user_name = "ubuntu"
         private_key_file_path = vars_dict['private_key_file_path']
 
+        print("\nDeploying Ansible")
         ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
 
         print("\nServers:")
