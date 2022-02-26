@@ -152,17 +152,3 @@ variable "aws_server_key_name" {
   description = "AWS EC2 Key pair Name"
   type        = string
 }
-
-##################################################################################
-# Certificate
-##################################################################################
-variable "aws_iam_server_certificate_arn" {
-  description = "AWS IAM Server Certificate ARN For ALBs"
-}
-
-##################################################################################
-# IAM
-##################################################################################
-variable "ec2_describe_instances_instance_profile_id" {
-  description = "EC2 Describe Instances Instance Profile ID"
-}
