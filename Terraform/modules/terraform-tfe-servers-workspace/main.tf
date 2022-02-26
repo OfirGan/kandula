@@ -195,6 +195,7 @@ resource "tfe_variable" "alb_certificate" {
 resource "tfe_variable" "alb_certificate_private_key" {
   key          = "alb_certificate_private_key"
   value        = var.alb_certificate_private_key
+  sensitive    = "true"
   description  = "Certificate Private Key PEM"
   workspace_id = tfe_workspace.servers_workspace.id
   category     = "terraform"

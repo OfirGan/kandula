@@ -34,5 +34,7 @@ module "servers" {
   project_name = var.project_name
   owner_name   = var.owner_name
 
-  aws_server_key_name = var.aws_server_key_name
+  aws_server_key_name         = var.aws_server_key_name
+  alb_certificate             = var.alb_certificate
+  alb_certificate_private_key = var.alb_certificate_private_key
 }
