@@ -67,13 +67,21 @@ resource "tls_self_signed_cert" "certificate" {
 }
 
 resource "local_file" "certificate_private_key" {
-  sensitive_content = tls_self_signed_cert.certificate.private_key_pem
+  sensitive_content = tls_private_key.ca_key.private_key_pem
   filename          = "${var.private_key_folder_path}Kandula_Certificat_Private_key.pem"
 }
 
 resource "local_file" "certificate" {
   sensitive_content = tls_self_signed_cert.certificate.cert_pem
   filename          = "${var.private_key_folder_path}Kandula_Self_Signed_Certificat.pem"
+}
+
+data "local_file" "certificate_private_key" {
+  filename = "${var.private_key_folder_path}Kandula_Certificat_Private_key.pem"
+}
+
+data "local_file" "certificate" {
+  filename = "${var.private_key_folder_path}Kandula_Self_Signed_Certificat.pem"
 }
 
 ##################################################################################
@@ -135,8 +143,8 @@ module "servers_tfe_module" {
 
   aws_server_key_name = aws_key_pair.server_key.key_name
 
-  alb_certificate             = tls_self_signed_cert.certificate.cert_pem
-  alb_certificate_private_key = tls_self_signed_cert.certificate.private_key_pem
+  alb_certificate_private_key = data.local_file.certificate_private_key.content
+  alb_certificate             = data.local_file.certificate.content
 
   project_name = var.project_name
   owner_name   = var.owner_name
