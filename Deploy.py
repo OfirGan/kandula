@@ -48,18 +48,9 @@ def get_bastion_host_ip(boto3_ec2, get_public_ip: bool):
         else:
             return instance.private_ip_address
 
-def get_jenkins_server_ip(boto3_ec2):
+def get_server_private_ip(boto3_ec2, service_tag_value : string):
     running_instances = boto3_ec2.instances.filter(Filters=[
-        {'Name': 'tag:service', 'Values': ['jenkins']},
-        {'Name': 'tag:instance_type', 'Values': ['server']},
-        {'Name': 'instance-state-name', 'Values': ['running']}
-    ])
-    for instance in running_instances:
-        return instance.private_ip_address
-
-def get_ansible_server_ip(boto3_ec2):
-    running_instances = boto3_ec2.instances.filter(Filters=[
-        {'Name': 'tag:service', 'Values': ['ansible']},
+        {'Name': 'tag:service', 'Values': [service_tag_value]},
         {'Name': 'tag:instance_type', 'Values': ['server']},
         {'Name': 'instance-state-name', 'Values': ['running']}
     ])
@@ -182,7 +173,7 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
 def ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path):
     bastion_host_public_ip = get_bastion_host_ip(boto3_ec2, True)
     bastion_host_private_ip = get_bastion_host_ip(boto3_ec2, False)
-    ansible_server_ip = get_ansible_server_ip(boto3_ec2)
+    ansible_server_ip = get_server_private_ip(boto3_ec2, 'ansible')
 
     bastion_ssh_client = ssh_client_connection(
         bastion_host_public_ip, ec2_user_name, private_key_file_path)
@@ -391,8 +382,10 @@ if __name__ == '__main__':
 
         print("\nServers:")
         print(f"bastion_host_public_ip: {get_bastion_host_ip(boto3_ec2,True)}")
-        print(f"ansible_server_ip: {get_ansible_server_ip(boto3_ec2)}")
-        print(f"jenkins_server_ip: {get_jenkins_server_ip(boto3_ec2)}")
+        print(f"ansible_server_ip: {get_server_private_ip(boto3_ec2,'ansible')}")
+        print(f"grafana_server_ip: {get_server_private_ip(boto3_ec2,'grafana')}")
+        print(f"prometheus_server_ip: {get_server_private_ip(boto3_ec2,'prometheus')}")
+        print(f"jenkins_server_ip: {get_server_private_ip(boto3_ec2,'jenkins')}")
         print_jenkins_nodes_ip(boto3_ec2)
         print_alb_dns_names()
 
