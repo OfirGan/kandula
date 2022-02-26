@@ -22,7 +22,7 @@ resource "tfe_oauth_client" "github_tfe_oauth_token" {
 }
 
 ##################################################################################
-# Keys
+# SSH Keys
 ##################################################################################
 
 resource "tls_private_key" "server_key" {
@@ -37,7 +37,43 @@ resource "aws_key_pair" "server_key" {
 
 resource "local_file" "server_key" {
   sensitive_content = tls_private_key.server_key.private_key_pem
-  filename          = var.private_key_file_path
+  filename          = "${var.private_key_folder_path}Kandula_Server_Private_Key.pem"
+}
+
+##################################################################################
+# CA CERTIFICATE
+##################################################################################
+
+resource "tls_private_key" "ca_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "tls_self_signed_cert" "certificate" {
+  key_algorithm     = tls_private_key.ca_key.algorithm
+  private_key_pem   = tls_private_key.ca_key.private_key_pem
+  is_ca_certificate = true
+
+  validity_period_hours = "17520" # 2 Years
+  allowed_uses = [
+    "key_encipherment",
+    "digital_signature",
+  ]
+
+  subject {
+    common_name  = "Kandula Certificate"
+    organization = "Kandula"
+  }
+}
+
+resource "local_file" "certificate_private_key" {
+  sensitive_content = tls_self_signed_cert.certificate.private_key_pem
+  filename          = "${var.private_key_folder_path}Kandula_Certificat_Private_key.pem"
+}
+
+resource "local_file" "certificate" {
+  sensitive_content = tls_self_signed_cert.certificate.cert_pem
+  filename          = "${var.private_key_folder_path}Kandula_Self_Signed_Certificat.pem"
 }
 
 ##################################################################################
@@ -98,6 +134,9 @@ module "servers_tfe_module" {
   jenkins_nodes_count  = var.jenkins_nodes_count
 
   aws_server_key_name = aws_key_pair.server_key.key_name
+
+  alb_certificate             = tls_self_signed_cert.certificate.cert_pem
+  alb_certificate_private_key = tls_self_signed_cert.certificate.private_key_pem
 
   project_name = var.project_name
   owner_name   = var.owner_name

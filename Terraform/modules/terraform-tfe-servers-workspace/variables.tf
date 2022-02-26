@@ -152,3 +152,11 @@ variable "aws_server_key_name" {
   description = "AWS EC2 Key pair Name"
   type        = string
 }
+
+variable "alb_certificate" {
+  description = "Certificate PEM"
+}
+
+variable "alb_certificate_private_key" {
+  description = "Certificate Private Key PEM"
+}
