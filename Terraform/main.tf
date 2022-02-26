@@ -77,11 +77,13 @@ resource "local_file" "certificate" {
 }
 
 data "local_file" "certificate_private_key" {
-  filename = "${var.private_key_folder_path}Kandula_Certificat_Private_key.pem"
+  filename   = "${var.private_key_folder_path}Kandula_Certificat_Private_key.pem"
+  depends_on = [resource.local_file.certificate_private_key]
 }
 
 data "local_file" "certificate" {
-  filename = "${var.private_key_folder_path}Kandula_Self_Signed_Certificat.pem"
+  filename   = "${var.private_key_folder_path}Kandula_Self_Signed_Certificat.pem"
+  depends_on = [resource.local_file.certificate]
 }
 
 ##################################################################################
