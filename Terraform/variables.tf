@@ -179,9 +179,9 @@ variable "owner_name" {
 ##################################################################################
 # Keys
 ##################################################################################
-variable "private_key_file_path" {
+variable "private_key_folder_path" {
   type        = string
-  description = "Private Key File Path"
+  description = "Private Key Folder Path"
 }
 
 ##################################################################################
