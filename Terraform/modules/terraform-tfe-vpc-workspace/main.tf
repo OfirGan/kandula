@@ -137,6 +137,6 @@ resource "tfe_variable" "cert_private_key_pem_content" {
   value        = var.cert_private_key_pem_content
   sensitive    = "true"
   description  = "Certificate Private Key PEM Content"
-  workspace_id = tfe_workspace.servers_workspace.id
+  workspace_id = tfe_workspace.vpc_workspace.id
   category     = "terraform"
 }
