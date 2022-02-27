@@ -34,10 +34,10 @@
 
 ## Create Pipeline:
 * SCM -> Git
-* Repository URL -> git@github.com:OfirGan/kandula.git
+* Repository URL -> git@github.com:OfirGan/kandula-project-app.git
 * Credentials -> github
 * Branch -> mid-project
-* Script Path -> Jenkins/Jenkinsfile.groovy
+* Script Path -> jenkins/jenkinsfile.groovy
 
 * run piplin 2 times (first will fail due to params config)
 ~~~
