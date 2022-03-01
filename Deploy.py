@@ -77,8 +77,9 @@ def ssh_client_connection(target_host_ip, ssh_user_name, private_key_file_path):
 
         return host_ssh_client
 
-    except Exception:
-        print(f"Error Connecting To: {0}".format(target_host_ip))
+    except Exception as ex:
+        print("Error Connecting To: {target_host_ip}")
+        print(ex)
         exit()
 
 def ssh_client_connection_throgh_bastion_host(bastion_host_ssh_client, bastion_host_private_ip, target_host_ip, ssh_user_name, private_key_file_path):
@@ -236,6 +237,24 @@ def create_tfe_api_session(tfe_token : string):
     )
     return session
 
+def get_workspace_outputs(session : requests.Session, organization_name : string , workspace_name : string):
+    workspace_id = get_workspace_id(session, organization_name, workspace_name)
+    response = session.get(
+        f"https://app.terraform.io/api/v2/workspaces/{workspace_id}/current-state-version?include=outputs"
+    ).json()
+    outputs_dict = {}
+    for output in response['included']:
+        dict_key = output['attributes']['name']
+        dict_value = output['attributes']['value']
+        outputs_dict[dict_key] = dict_value
+    return outputs_dict
+
+def get_workspaces_outputs(session : requests.Session, organization_name : string, workspaces_list : list):
+    outputs = {}
+    for workspace in workspaces_list:
+        outputs[workspace] = get_workspace_outputs(session, organization_name, workspace)
+    return outputs
+
 def get_workspaces_names_list(session : requests.Session, organization_name : string):
     response = session.get(
         f"https://app.terraform.io/api/v2/organizations/{organization_name}/workspaces"
@@ -375,9 +394,11 @@ if __name__ == '__main__':
         print("\nDeploying Terraform Cloud Workspaces")
         run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
         
+        workspaces_outputs = get_workspaces_outputs(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list)
+
         boto3_ec2 = boto3.resource('ec2')
         ec2_user_name = "ubuntu"
-        private_key_file_path = vars_dict['private_key_file_path']
+        private_key_file_path = f"{vars_dict['private_key_folder_path']}Kandula_Server_Private_Key.pem"
 
         print("\nDeploying Ansible")
         ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
@@ -387,6 +408,7 @@ if __name__ == '__main__':
         print(f"ansible_server_ip: {get_server_private_ip(boto3_ec2,'ansible')}")
         print(f"grafana_server_ip: {get_server_private_ip(boto3_ec2,'grafana')}")
         print(f"prometheus_server_ip: {get_server_private_ip(boto3_ec2,'prometheus')}")
+        print(f"elk_server_ip: {get_server_private_ip(boto3_ec2,'elk')}")
         print(f"jenkins_server_ip: {get_server_private_ip(boto3_ec2,'jenkins')}")
         print_jenkins_nodes_ip(boto3_ec2)
         print_alb_dns_names()
