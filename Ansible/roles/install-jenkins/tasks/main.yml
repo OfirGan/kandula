@@ -7,6 +7,10 @@
   when: instance_type == "server"
   name: Install Jenkins Server
 
+- include_tasks: trivy.yml
+  when: instance_type == "node"
+  name: Install Jenkins Node
+
 - include_tasks: node.yml
   when: instance_type == "node"
   name: Install Jenkins Node
