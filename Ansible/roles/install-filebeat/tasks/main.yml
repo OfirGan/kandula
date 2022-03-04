@@ -34,7 +34,7 @@
   replace:
     path: /home/ubuntu/filebeat-k8s-config.yaml
     regexp: "<you elk host private ip>"
-    replace: { { elk_private_ip } }
+    replace: "{{ elk_private_ip }}"
   when: service == "ansible"
 
 - name: Deploy filebeat on K8s
