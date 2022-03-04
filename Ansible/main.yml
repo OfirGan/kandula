@@ -41,6 +41,11 @@
 
     - role: install-node-exporter
 
+    - role: install-jenkins
+      when:
+        - (service == "jenkins" and instance_type == "node") or
+          (service == "ansible")
+
     - role: install-docker
       when: (service == "prometheus") or (service == "grafana") or (service == "jenkins")
 
