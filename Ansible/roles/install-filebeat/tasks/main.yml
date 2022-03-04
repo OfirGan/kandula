@@ -39,3 +39,4 @@
 
 - name: Deploy filebeat on K8s
   shell: "kubectl apply -f filebeat-k8s-config.yaml"
+  when: service == "ansible"
