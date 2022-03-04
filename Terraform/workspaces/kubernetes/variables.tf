@@ -3,8 +3,7 @@ variable "kubernetes_version" {
   description = "kubernetes version"
 }
 
-variable "aws_default_region" {
-  default     = "us-east-1"
+variable "aws_region" {
   description = "aws region"
 }
 

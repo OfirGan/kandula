@@ -56,7 +56,7 @@ resource "tfe_variable" "aws_secret_access_key" {
 resource "tfe_variable" "aws_default_region" {
   key          = "AWS_DEFAULT_REGION"
   value        = var.aws_default_region
-  description  = "AWS Default Region"
+  description  = "AWS Default Region ENV"
   workspace_id = tfe_workspace.kubernetes.id
   category     = "env"
 }
@@ -64,6 +64,14 @@ resource "tfe_variable" "aws_default_region" {
 ##################################################################################
 # Workspace Variables
 ##################################################################################
+
+resource "tfe_variable" "aws_region" {
+  key          = "aws_region"
+  value        = var.aws_default_region
+  description  = "AWS Default Region TF var"
+  workspace_id = tfe_workspace.kubernetes.id
+  category     = "terraform"
+}
 
 resource "tfe_variable" "tfe_vpc_workspace_name" {
   key          = "tfe_vpc_workspace_name"

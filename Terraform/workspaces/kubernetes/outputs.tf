@@ -20,7 +20,7 @@ output "config_map_aws_auth" {
 
 output "region" {
   description = "AWS region"
-  value       = var.aws_default_region
+  value       = var.aws_region
 }
 
 output "cluster_name" {
