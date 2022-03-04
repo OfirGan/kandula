@@ -38,5 +38,6 @@
   when: service == "ansible"
 
 - name: Deploy filebeat on K8s
+  become: no
   shell: "kubectl apply -f filebeat-k8s-config.yaml"
   when: service == "ansible"
