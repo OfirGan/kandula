@@ -130,6 +130,7 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
     consul_servers_count = vars_dict['consul_servers_count']
     k8s_cluster_name = vars_dict['k8s_cluster_name']
     aws_default_region = vars_dict['aws_default_region']
+    elk_server_ip = get_server_private_ip(boto3_ec2,'elk')
 
     scp_file_copy(ansible_ssh_client,
                   private_key_file_path, '/home/ubuntu/.ssh/id_rsa')
@@ -157,7 +158,7 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
     ]
 
     run_ansible_playbook = [
-        f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml -e "consul_servers_count={consul_servers_count} consul_dc_name={consul_dc_name} eks_cluster_name={k8s_cluster_name} aws_default_region={aws_default_region}"'
+        f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml -e "consul_servers_count={consul_servers_count} consul_dc_name={consul_dc_name} eks_cluster_name={k8s_cluster_name} aws_default_region={aws_default_region} elk_private_ip={elk_server_ip}"'
     ]
 
 
@@ -373,24 +374,29 @@ if __name__ == '__main__':
 
     if is_destroy_plan:
         print("Destroying Everything !!!")
+        
         vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
         workspaces_to_destroy_list = [
-            # vars_dict["tfe_kubernetes_workspace_name"],
+            vars_dict["tfe_kubernetes_workspace_name"],
             vars_dict["tfe_servers_workspace_name"], 
             vars_dict["tfe_vpc_workspace_name"]
         ]
         run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_destroy_list, True)
+        
         destroy_terraform(tfvars_file_path)
     
     else:
         print("Deploying Everything :)")
         deploy_terraform(tfvars_file_path)
+        
         vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
+        
         workspaces_to_apply_list = [
             vars_dict["tfe_vpc_workspace_name"]
             ,vars_dict["tfe_servers_workspace_name"]
-            # ,vars_dict["tfe_kubernetes_workspace_name"]
+            ,vars_dict["tfe_kubernetes_workspace_name"]
         ]
+        
         print("\nDeploying Terraform Cloud Workspaces")
         run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
         
@@ -413,5 +419,4 @@ if __name__ == '__main__':
         print_jenkins_nodes_ip(boto3_ec2)
         print_alb_dns_names()
 
-    print("The End")
     exit()
