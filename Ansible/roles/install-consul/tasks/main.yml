@@ -2,5 +2,10 @@
 - include_tasks: install_consul.yml
   name: Install and Configure Consul
 
+- include_tasks: install_consul_k8s_client.yml
+  name: Install K8s Consul Client
+  when: service == "ansible"
+
 - include_tasks: register_consul_service.yml
+  name: Register Consul Services
   when: is_consul_monitored == true and service_role != "service_discovery"

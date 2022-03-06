@@ -82,8 +82,14 @@
 - name: Update Consul config DC Name
   lineinfile:
     path: /etc/consul.d/config.json
-    regexp: "^(.*)datacenter(.*)$"
+    regexp: "^(.*)consul_dc_name(.*)$"
     line: '"datacenter": "{{ consul_dc_name }}",'
+
+- name: Update Consul config gossip-encryption-key
+  lineinfile:
+    path: /etc/consul.d/config.json
+    regexp: "^(.*)consul_gossip_encryption_key(.*)$"
+    line: '"encrypt": "{{ consul_gossip_encryption_key }}",'
 
 - name: Update Consul config Server Name
   lineinfile:
