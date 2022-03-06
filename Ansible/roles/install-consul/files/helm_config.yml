@@ -22,3 +22,9 @@ syncCatalog:
   enabled: true
   k8sAllowNamespaces: ["*"]
   k8sDenyNamespaces: []
+
+connectInject:
+  transparentProxy:
+    defaultEnabled: true
+  enabled: true
+  default: true
