@@ -1,4 +1,4 @@
-resource "kubernetes_secret" "consul_secrets" {
+resource "kubernetes_secret_v1" "consul_secrets" {
   metadata {
     name = "${module.eks.cluster_id}-hcp"
   }
