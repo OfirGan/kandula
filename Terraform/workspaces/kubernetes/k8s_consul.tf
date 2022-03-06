@@ -28,7 +28,7 @@ resource "helm_release" "consul" {
 
   # Helm installation relies on the Kuberenetes secret being
   # available.
-  depends_on = [kubernetes_secret.consul_secrets]
+  depends_on = [kubernetes_secret_v1.consul_secrets]
 }
 
 variable "consul_hosts" {
