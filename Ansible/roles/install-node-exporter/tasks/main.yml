@@ -56,6 +56,14 @@
     src: node_exporter.service
     dest: /etc/systemd/system/node_exporter.service
 
+- name: Create Crontab job
+  cron:
+    name: "log active users"
+    minute: "*"
+    hour: "*"
+    day: "*"
+    job: 'echo "logged_in_sessions $(who | wc -l)" > /var/lib/node_exporter/textfile_collector/logged_in_sessions.prom'
+
 - name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: yes
@@ -65,3 +73,6 @@
     state: started
     name: node_exporter
     enabled: yes
+
+- include_tasks: k8s.yml
+  when: service == "ansible"
