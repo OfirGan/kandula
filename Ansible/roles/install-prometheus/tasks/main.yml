@@ -16,7 +16,7 @@
   community.docker.docker_container:
     name: prometheus
     image: prom/prometheus
-    state: started
+    state: restarted
     restart_policy: always
     network_mode: host
     volumes:
