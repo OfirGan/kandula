@@ -22,5 +22,5 @@ processors:
       when.not.contains.tags: forwarded
   - add_cloud_metadata: ~
 output.elasticsearch:
-  hosts: ["elastic.service.kandula.consul:9200"]
+  hosts: ["elastic.service.consul:9200"]
   index: "filebeat-%{[agent.version]}-%{[agent.name]}-%{+yyyy.MM.dd}"
