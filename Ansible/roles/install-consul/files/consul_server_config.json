@@ -17,5 +17,8 @@
   "telemetry": {
     "prometheus_retention_time": "1m",
     "disable_hostname": true
+  },
+  "connect": {
+    "enabled": true
   }
 }
