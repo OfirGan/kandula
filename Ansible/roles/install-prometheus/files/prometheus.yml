@@ -2,21 +2,20 @@ global:
   scrape_interval: 5s
 
 scrape_configs:
+  # Monitor prometheus
   - job_name: "prometheus"
     static_configs:
       - targets: ["localhost:9090"]
 
-  - job_name: "node_exporters"
-    consul_sd_configs:
-      - server: "localhost:8500"
-    relabel_configs:
-      - source_labels: ["__address__"]
-        target_label: "__address__"
-        regex: "(.*):(.*)"
-        replacement: "$1:9100"
-      - source_labels: ["__meta_consul_node"]
-        target_label: "instance"
+  # Monitor kube-state-metrics
+  - job_name: "kubernetes_state_metrics"
+    static_configs:
+      - targets: ["kube-state-metrics-kube-system.service.kandula.consul:8080"]
+    metric_relabel_configs:
+      - target_label: cluster
+        replacement: eks
 
+  # Monitor consul service using consul client
   - job_name: "consul_exporters"
     consul_sd_configs:
       - server: "localhost:8500"
@@ -30,3 +29,32 @@ scrape_configs:
     metrics_path: "/v1/agent/metrics"
     params:
       format: ["prometheus"]
+
+  # Monitor node-exporter service using consul client
+  - job_name: "node_exporter_ec2"
+    consul_sd_configs:
+      - server: "localhost:8500"
+        services:
+          - "node-exporter-ec2"
+    relabel_configs:
+      - source_labels: ["__address__"]
+        target_label: "__address__"
+        regex: "(.*):(.*)"
+        replacement: "$1:9100"
+      - source_labels: ["__meta_consul_node"]
+        target_label: "instance"
+
+  # Monitor node-exporter-monitoring service using consul client
+  - job_name: "node_exporter_k8s"
+    consul_sd_configs:
+      - server: "localhost:8500"
+        services:
+          - "node-exporter-monitoring"
+    relabel_configs:
+      - source_labels: ["__address__"]
+        target_label: "__address__"
+        regex: "(.*):(.*)"
+        replacement: "$1:9100"
+      - source_labels: ["__meta_consul_service_id"]
+        replacement: "$1"
+        target_label: pod
