@@ -19,10 +19,11 @@
     dest: /home/ubuntu/filebeat_health_check.sh
     mode: a+x
 
-- name: Start Filebeat
+- name: Configure Filebeat Service
   ansible.builtin.service:
     name: filebeat
-    state: started
+    state: restarted
+    enabled: yes
 
 - name: Copy Filebeat K8s config file
   copy:
