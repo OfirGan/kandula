@@ -30,13 +30,6 @@
     dest: /home/ubuntu/filebeat-k8s-config.yaml
   when: service == "ansible"
 
-- name: Copy Filebeat K8
-  replace:
-    path: /home/ubuntu/filebeat-k8s-config.yaml
-    regexp: "<you elk host private ip>"
-    replace: "{{ elk_private_ip }}"
-  when: service == "ansible"
-
 - name: Deploy filebeat on K8s
   become: no
   shell: "kubectl apply -f filebeat-k8s-config.yaml"
