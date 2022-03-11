@@ -19,7 +19,7 @@
   lineinfile:
     path: /home/ubuntu/k8s_helm_consul_config.yaml
     regexp: "^(.*)k8s_consul_svc_ip(.*)$"
-    line: "  ClusterIP: {{ k8s_consul_svc_ip }}"
+    line: '  ClusterIP: "{{ k8s_consul_svc_ip }}"'
 
 - name: Copy k8s CoreDNS Config
   copy:
@@ -30,7 +30,7 @@
   lineinfile:
     path: /home/ubuntu/k8s_coredns_config.yaml
     regexp: "^(.*)k8s_consul_svc_ip(.*)$"
-    line: "  ClusterIP: {{ k8s_consul_svc_ip }}"
+    line: "      forward . {{ k8s_consul_svc_ip }}"
 
 - name: Add Consul gossip encription key
   become: false

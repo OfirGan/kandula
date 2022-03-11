@@ -18,11 +18,11 @@ client:
     pod-name: ${HOSTNAME}
     host-ip: ${HOST_IP}
 
+dns:
+  enabled: true
+  clusterIP: "${k8s_consul_svc_ip}"
+
 syncCatalog:
   enabled: true
   k8sAllowNamespaces: ["*"]
   k8sDenyNamespaces: []
-
-dns:
-  enabled: true
-  clusterIP: "${k8s_consul_svc_ip}"
