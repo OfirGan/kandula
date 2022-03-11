@@ -4,16 +4,33 @@
   shell: helm repo add hashicorp https://helm.releases.hashicorp.com
   ignore_errors: true
 
-- name: Copy Helm config
+- name: Copy K8s Helm Consul Config
   copy:
-    src: helm_config.yml
-    dest: /home/ubuntu/helm_config.yml
+    src: k8s_helm_consul_config.yaml
+    dest: /home/ubuntu/k8s_helm_consul_config.yaml
 
-- name: Update Consul Helm config DC Name
+- name: Update K8s Helm Consul DC Name
   lineinfile:
-    path: /home/ubuntu/helm_config.yml
+    path: /home/ubuntu/k8s_helm_consul_config.yaml
     regexp: "^(.*)consul_dc_name(.*)$"
     line: "  datacenter: {{ consul_dc_name }}"
+
+- name: Update K8s Helm Consul ClusterIP
+  lineinfile:
+    path: /home/ubuntu/k8s_helm_consul_config.yaml
+    regexp: "^(.*)k8s_consul_svc_ip(.*)$"
+    line: "  ClusterIP: {{ k8s_consul_svc_ip }}"
+
+- name: Copy k8s CoreDNS Config
+  copy:
+    src: k8s_coredns_config.yaml
+    dest: /home/ubuntu/k8s_coredns_config.yaml
+
+- name: Update K8s CoreDNS Consul Service IP
+  lineinfile:
+    path: /home/ubuntu/k8s_coredns_config.yaml
+    regexp: "^(.*)k8s_consul_svc_ip(.*)$"
+    line: "  ClusterIP: {{ k8s_consul_svc_ip }}"
 
 - name: Add Consul gossip encription key
   become: false
@@ -22,5 +39,10 @@
 
 - name: Deploy Consul chart using values file
   become: false
-  shell: helm install consul hashicorp/consul --namespace default --values /home/ubuntu/helm_config.yml
+  shell: helm install consul hashicorp/consul --namespace default --values /home/ubuntu/k8s_helm_consul_config.yaml
+  ignore_errors: true
+
+- name: Configure K8s CoreNDS with Consul
+  become: false
+  shell: kubectl apply -f /home/ubuntu/k8s_coredns_config.yaml
   ignore_errors: true

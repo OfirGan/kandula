@@ -23,8 +23,6 @@ syncCatalog:
   k8sAllowNamespaces: ["*"]
   k8sDenyNamespaces: []
 
-connectInject:
-  transparentProxy:
-    defaultEnabled: true
+dns:
   enabled: true
-  default: true
+  clusterIP: "${k8s_consul_svc_ip}"
