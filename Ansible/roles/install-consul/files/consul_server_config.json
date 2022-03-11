@@ -11,6 +11,7 @@
     "provider=aws tag_key=service_role tag_value=service_discovery"
   ],
   "server": true,
+  "enable_script_checks": true,
   "bootstrap_expect": "servers_count",
   "ui": true,
   "client_addr": "0.0.0.0",
