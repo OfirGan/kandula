@@ -110,4 +110,4 @@
 - name: Start Consul service
   systemd:
     name: consul.service
-    state: started
+    state: restarted

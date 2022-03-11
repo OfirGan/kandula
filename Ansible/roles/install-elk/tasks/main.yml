@@ -29,9 +29,9 @@
 - name: Start Elasticsearch
   ansible.builtin.service:
     name: elasticsearch
-    state: started
+    state: restarted
 
 - name: Start Kibana
   ansible.builtin.service:
     name: kibana
-    state: started
+    state: restarted
