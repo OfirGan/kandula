@@ -8,4 +8,4 @@
 
 - include_tasks: register_consul_service.yml
   name: Register Consul Services
-  when: is_consul_monitored == true and service_role != "service_discovery"
+  when: is_consul_monitored == true
