@@ -33,7 +33,7 @@ scrape_configs:
       format: ["prometheus"]
 
   # Monitor node-exporter service using consul client
-  - job_name: "node_exporter_ec2"
+  - job_name: "node_exporter_service_ec2"
     consul_sd_configs:
       - server: "localhost:8500"
         services:
@@ -47,7 +47,7 @@ scrape_configs:
         target_label: "instance"
 
   # Monitor node-exporter-monitoring service using consul client
-  - job_name: "node_exporter_k8s_ec2"
+  - job_name: "node_exporter_service_k8s"
     consul_sd_configs:
       - server: "localhost:8500"
         services:
