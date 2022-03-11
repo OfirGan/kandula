@@ -7,6 +7,16 @@ variable "aws_region" {
   description = "aws region"
 }
 
+variable "cidr_blocks" {
+  type        = list(string)
+  description = "cidr blocks list"
+  default = [
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16",
+  ]
+}
+
 variable "k8s_service_account_namespace" {
   description = "Kubernetes Service Account Namespace"
 }
