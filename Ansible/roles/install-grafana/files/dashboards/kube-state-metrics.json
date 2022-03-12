@@ -3648,7 +3648,7 @@
             {
                 "hide": 2,
                 "name": "datasource",
-                "query": "Prometheus",
+                "query": "Prometheus-K8s",
                 "skipUrlSync": false,
                 "type": "constant"
             }

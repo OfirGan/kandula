@@ -430,8 +430,8 @@
       {
         "current": {
           "selected": false,
-          "text": "Prometheus",
-          "value": "Prometheus"
+          "text": "Prometheus-K8s",
+          "value": "Prometheus-K8s"
         },
         "hide": 0,
         "includeAll": false,
