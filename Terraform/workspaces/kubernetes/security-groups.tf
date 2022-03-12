@@ -1,6 +1,7 @@
 
-resource "aws_security_group" "all_worker_mgmt" {
-  name_prefix = "all_worker_management"
+resource "aws_security_group" "k8s_ssh_sg" {
+  name_prefix = "k8s_ssh_sg"
+  description = "K8s SSH Security Group"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
   ingress {
@@ -10,11 +11,22 @@ resource "aws_security_group" "all_worker_mgmt" {
 
     cidr_blocks = var.cidr_blocks
   }
+
+  ingress {
+    from_port   = 8
+    to_port     = 0
+    protocol    = "icmp"
+    cidr_blocks = var.cidr_blocks
+  }
+
+  tags = {
+    "Name" = "k8s_ssh_sg"
+  }
 }
 
-resource "aws_security_group" "node_exporter_k8s_sg" {
-  name        = "node_exporter_k8s_sg"
-  description = " Node Exporter Security group"
+resource "aws_security_group" "k8s_node_exporter_sg" {
+  name        = "k8s_node_exporter_sg"
+  description = "K8s Node Exporter Security Group"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
   ingress {
@@ -24,11 +36,33 @@ resource "aws_security_group" "node_exporter_k8s_sg" {
 
     cidr_blocks = var.cidr_blocks
   }
+
+  tags = {
+    "Name" = "k8s_node_exporter_sg"
+  }
 }
 
-resource "aws_security_group" "kube_state_metrics_k8s_sg" {
-  name        = "kube_state_metrics_k8s_sg"
-  description = "Kube State Metrics Security group"
+resource "aws_security_group" "k8s_prometheus_sg" {
+  name        = "k8s_prometheus_sg"
+  description = "K8s Prometheus Security Group"
+  vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
+
+  ingress {
+    from_port = 9090
+    to_port   = 9090
+    protocol  = "tcp"
+
+    cidr_blocks = var.cidr_blocks
+  }
+
+  tags = {
+    "Name" = "k8s_prometheus_sg"
+  }
+}
+
+resource "aws_security_group" "k8s_kube_state_metrics_sg" {
+  name        = "k8s_kube_state_metrics_sg"
+  description = "K8s Kube State Metrics Security Group"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
   ingress {
@@ -38,11 +72,15 @@ resource "aws_security_group" "kube_state_metrics_k8s_sg" {
 
     cidr_blocks = var.cidr_blocks
   }
+
+  tags = {
+    "Name" = "k8s_kube_state_metrics_sg"
+  }
 }
 
-resource "aws_security_group" "consul_k8s_sg" {
-  name        = "consul_k8s_sg"
-  description = "Consul K8S Security group"
+resource "aws_security_group" "k8s_consul_sg" {
+  name        = "k8s_consul_sg"
+  description = "K8s Consul Security Group"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
   dynamic "ingress" {
@@ -65,5 +103,9 @@ resource "aws_security_group" "consul_k8s_sg" {
       protocol    = "udp"
       cidr_blocks = var.cidr_blocks
     }
+  }
+
+  tags = {
+    "Name" = "k8s_consul_sg"
   }
 }
