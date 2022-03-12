@@ -1,10 +1,9 @@
----
 - name: Add Consul repo
   become: false
   shell: helm repo add hashicorp https://helm.releases.hashicorp.com
   ignore_errors: true
 
-- name: Copy K8s Helm Consul Config
+- name: Copy K8s Helm Consul Config file
   copy:
     src: k8s_helm_consul_config.yaml
     dest: /home/ubuntu/k8s_helm_consul_config.yaml
@@ -14,23 +13,6 @@
     path: /home/ubuntu/k8s_helm_consul_config.yaml
     regexp: "^(.*)consul_dc_name(.*)$"
     line: "  datacenter: {{ consul_dc_name }}"
-
-- name: Update K8s Helm Consul ClusterIP
-  lineinfile:
-    path: /home/ubuntu/k8s_helm_consul_config.yaml
-    regexp: "^(.*)k8s_consul_svc_ip(.*)$"
-    line: '  ClusterIP: "{{ k8s_consul_svc_ip }}"'
-
-- name: Copy k8s CoreDNS Config
-  copy:
-    src: k8s_coredns_config.yaml
-    dest: /home/ubuntu/k8s_coredns_config.yaml
-
-- name: Update K8s CoreDNS Consul Service IP
-  lineinfile:
-    path: /home/ubuntu/k8s_coredns_config.yaml
-    regexp: "^(.*)k8s_consul_svc_ip(.*)$"
-    line: "      forward . {{ k8s_consul_svc_ip }}"
 
 - name: Add Consul gossip encription key
   become: false
@@ -42,7 +24,28 @@
   shell: helm install consul hashicorp/consul --namespace default --values /home/ubuntu/k8s_helm_consul_config.yaml
   ignore_errors: true
 
-- name: Configure K8s CoreNDS with Consul
+- name: Copy k8s CoreDNS Configmap Config file
+  copy:
+    src: k8s_coredns_config.yaml
+    dest: /home/ubuntu/k8s_coredns_config.yaml
+
+- name: Get consul-consul-dns svc IP
+  become: false
+  command: "kubectl get svc consul-consul-dns --output jsonpath='{.spec.clusterIP}'"
+  register: consul_dns_svc_ip
+  ignore_errors: true
+
+- name: Set consul-consul-dns svc IP as Fact
+  set_fact:
+    consul_dns_svc_ip: "{{ consul_dns_svc_ip.stdout }}"
+
+- name: Update K8s CoreDNS Configmap with Consul Service IP
+  lineinfile:
+    path: /home/ubuntu/k8s_coredns_config.yaml
+    regexp: "^(.*)k8s_consul_svc_ip(.*)$"
+    line: "      forward . {{ consul_dns_svc_ip }}"
+
+- name: Apply K8s CoreNDS Configmap
   become: false
   shell: kubectl apply -f /home/ubuntu/k8s_coredns_config.yaml
   ignore_errors: true

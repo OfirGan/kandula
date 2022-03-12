@@ -20,7 +20,6 @@ client:
 
 dns:
   enabled: true
-  clusterIP: "${k8s_consul_svc_ip}"
 
 syncCatalog:
   enabled: true
