@@ -7,6 +7,35 @@
     group: "{{ hostvars[inventory_hostname]['docker_group'] }}"
     mode: "0777"
 
+- name: Create Datasource folder
+  file:
+    path: /etc/grafana/provisioning/datasources
+    state: directory
+    group: "{{ hostvars[inventory_hostname]['docker_group'] }}"
+    mode: "0777"
+
+- name: Create Dashboard folder
+  file:
+    path: /etc/grafana/provisioning/dashboards
+    state: directory
+    group: "{{ hostvars[inventory_hostname]['docker_group'] }}"
+    mode: "0777"
+
+- name: Copy Datasource config to machine
+  copy:
+    src: datasource.yml
+    dest: /etc/grafana/provisioning/datasources/datasource.yml
+
+- name: Copy Dashboard config to machine
+  copy:
+    src: dashboard.yml
+    dest: /etc/grafana/provisioning/dashboards/dashboard.yml
+
+- name: Copy Dashboards to the machine
+  copy:
+    src: files/dashboards/
+    dest: /etc/grafana/provisioning/dashboards/
+
 - name: Copy Grafana Configuration
   copy:
     src: grafana.ini
@@ -20,5 +49,5 @@
     restart_policy: always
     network_mode: host
     volumes:
-      - /etc/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - /etc/grafana/:/etc/grafana/
       - /var/run/docker.sock:/var/run/docker.sock
