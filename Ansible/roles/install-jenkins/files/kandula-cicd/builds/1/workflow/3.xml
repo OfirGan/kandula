@@ -1,0 +1,59 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<Tag plugin="workflow-support@3.8">
+  <node class="cps.n.StepAtomNode" plugin="workflow-cps@2640.v00e79c8113de">
+    <parentIds>
+      <string>2</string>
+    </parentIds>
+    <id>3</id>
+    <descriptorId>org.jenkinsci.plugins.workflow.multibranch.JobPropertyStep</descriptorId>
+  </node>
+  <actions>
+    <cps.a.ArgumentsActionImpl plugin="workflow-cps@2640.v00e79c8113de">
+      <arguments>
+        <entry>
+          <string>properties</string>
+          <list>
+            <org.jenkinsci.plugins.workflow.cps.UninstantiatedDescribableWithInterpolation>
+              <symbol>parameters</symbol>
+              <arguments class="linked-hash-map">
+                <entry>
+                  <string>&lt;anonymous&gt;</string>
+                  <list>
+                    <org.jenkinsci.plugins.workflow.cps.UninstantiatedDescribableWithInterpolation>
+                      <symbol>choice</symbol>
+                      <arguments class="linked-hash-map">
+                        <entry>
+                          <string>choices</string>
+                          <list>
+                            <string>disabled</string>
+                            <string>enabled</string>
+                          </list>
+                        </entry>
+                        <entry>
+                          <string>name</string>
+                          <string>deploy</string>
+                        </entry>
+                        <entry>
+                          <string>description</string>
+                          <string>Should Deploy the Knadula 🐘 app?</string>
+                        </entry>
+                      </arguments>
+                      <interpolatedStrings/>
+                    </org.jenkinsci.plugins.workflow.cps.UninstantiatedDescribableWithInterpolation>
+                  </list>
+                </entry>
+              </arguments>
+              <interpolatedStrings/>
+            </org.jenkinsci.plugins.workflow.cps.UninstantiatedDescribableWithInterpolation>
+          </list>
+        </entry>
+      </arguments>
+      <sensitiveVariables/>
+      <isUnmodifiedBySanitization>true</isUnmodifiedBySanitization>
+    </cps.a.ArgumentsActionImpl>
+    <wf.a.TimingAction plugin="workflow-api@2.47">
+      <startTime>1647117949755</startTime>
+    </wf.a.TimingAction>
+    <s.a.LogStorageAction/>
+  </actions>
+</Tag>

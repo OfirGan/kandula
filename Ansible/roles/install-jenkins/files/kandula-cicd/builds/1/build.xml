@@ -1,0 +1,180 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-build plugin="workflow-job@2.42">
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause/>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <org.jenkinsci.plugins.workflow.libs.LibrariesAction plugin="workflow-cps-global-lib@548.v9085a486966a">
+      <libraries/>
+    </org.jenkinsci.plugins.workflow.libs.LibrariesAction>
+    <org.jenkinsci.plugins.workflow.cps.EnvActionImpl plugin="workflow-cps@2640.v00e79c8113de">
+      <env class="tree-map"/>
+    </org.jenkinsci.plugins.workflow.cps.EnvActionImpl>
+    <hudson.plugins.git.util.BuildData plugin="git@4.10.0">
+      <buildsByBranchName>
+        <entry>
+          <string>refs/remotes/origin/final-project</string>
+          <hudson.plugins.git.util.Build>
+            <marked plugin="git-client@3.10.0">
+              <sha1>4797839aa5c9845d896acac13c21acee9e7451cb</sha1>
+              <branches class="list">
+                <hudson.plugins.git.Branch>
+                  <sha1 reference="../../../sha1"/>
+                  <name>refs/remotes/origin/final-project</name>
+                </hudson.plugins.git.Branch>
+              </branches>
+            </marked>
+            <revision reference="../marked"/>
+            <hudsonBuildNumber>1</hudsonBuildNumber>
+          </hudson.plugins.git.util.Build>
+        </entry>
+      </buildsByBranchName>
+      <lastBuild reference="../buildsByBranchName/entry/hudson.plugins.git.util.Build"/>
+      <remoteUrls>
+        <string>git@github.com:OfirGan/kandula-project-app.git</string>
+      </remoteUrls>
+    </hudson.plugins.git.util.BuildData>
+    <org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState plugin="workflow-scm-step@2.13">
+      <revisionStates>
+        <entry>
+          <string>git git@github.com:OfirGan/kandula-project-app.git</string>
+          <hudson.scm.SCMRevisionState_-None/>
+        </entry>
+      </revisionStates>
+    </org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState>
+    <jenkins.model.InterruptedBuildAction>
+      <causes>
+        <jenkins.model.CauseOfInterruption_-UserInterruption>
+          <user>anonymous</user>
+        </jenkins.model.CauseOfInterruption_-UserInterruption>
+      </causes>
+    </jenkins.model.InterruptedBuildAction>
+  </actions>
+  <queueId>75</queueId>
+  <timestamp>1647117947774</timestamp>
+  <startTime>1647117947782</startTime>
+  <result>ABORTED</result>
+  <duration>19808</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <execution class="org.jenkinsci.plugins.workflow.cps.CpsFlowExecution">
+    <result>ABORTED</result>
+    <script>properties([parameters([choice(choices: [&apos;disabled&apos;,&apos;enabled&apos;], name: &apos;deploy&apos;, description: &apos;Should Deploy the Knadula 🐘 app?&apos;)])])
+
+docker_registry = &quot;https://registry.hub.docker.com/&quot;
+docker_repository = &quot;ofirgan/kandula-app&quot;
+docker_ver = &quot;v1.${env.BUILD_NUMBER}&quot;
+docker_image_full_name = &quot;${docker_repository}:${docker_ver}&quot;
+docker_creds_id = &quot;dockerhub.ofirgan&quot;
+
+github_repo_ssh_Path = &quot;git@github.com:OfirGan/kandula-project-app.git&quot;
+github_branch = &apos;final-project&apos;
+github_creds_id = &quot;github.ofirgan&quot;
+
+
+echo &quot;Deploy is: ${params.deploy}&quot;
+
+node(label: &quot;docker&quot;){
+    stage(&apos;Clone Kandula App Repo to Worker Node&apos;) {
+        script {
+            git branch: &quot;${github_branch}&quot;, credentialsId: &quot;${github_creds_id}&quot;, url: &quot;${github_repo_ssh_Path}&quot;
+        }
+    }
+    stage(&quot;Build Dockerfile&quot;) {
+        dockerImage = docker.build(&quot;${docker_image_full_name}&quot;)
+    }
+    
+    stage(&apos;Scan Docker Image with Trivy&apos;) {
+      echo &quot;Scanning image ${docker_image_full_name}&quot;
+      sh &quot;trivy image --timeout 5m --exit-code=1 --severity CRITICAL,HIGH ${docker_image_full_name}&quot;
+      sh &quot;trivy image --timeout 5m --exit-code=0 --severity UNKNOWN,LOW,MEDIUM --ignore-unfixed ${docker_image_full_name}&quot;
+    }
+
+    stage(&quot;Docker Push&quot;) {
+        docker.withRegistry(&quot;${docker_registry}&quot;, &quot;${docker_creds_id}&quot;) {
+            dockerImage.push(&quot;${docker_ver}&quot;)
+            dockerImage.push(&quot;latest&quot;)
+        }
+    }
+
+    if (deploy.equals(&apos;enabled&apos;)) {
+        stage(&apos;Config K8s Deployment file&apos;) {
+            sh &quot;sed -i &apos;s/var_docker_repository/$docker_repository/g&apos; ./kubernetes/kandula-app-deployment.yaml&quot;
+        }
+
+        stage (&apos;K8S Deploy Application&apos;) {
+          sh &apos;kubectl apply -f ./kubernetes/kandula-app-deployment.yaml&apos;
+          sh &quot;kubectl annotate deployment/kandula-app-deployment kubernetes.io/change-cause=&apos;App updated to v${docker_ver}&apos;&quot;
+        }
+
+        stage (&apos;K8S Deploy Service&apos;) {
+          sh &apos;kubectl apply -f ./kubernetes/kandula-app-service.yaml&apos;
+        }
+    }
+}</script>
+    <loadedScripts class="map"/>
+    <durabilityHint>MAX_SURVIVABILITY</durabilityHint>
+    <timings class="map">
+      <entry>
+        <string>flowNode</string>
+        <long>522986085</long>
+      </entry>
+      <entry>
+        <string>classLoad</string>
+        <long>139324136</long>
+      </entry>
+      <entry>
+        <string>run</string>
+        <long>944672206</long>
+      </entry>
+      <entry>
+        <string>parse</string>
+        <long>71715754</long>
+      </entry>
+      <entry>
+        <string>saveProgram</string>
+        <long>43579430</long>
+      </entry>
+    </timings>
+    <sandbox>true</sandbox>
+    <iota>24</iota>
+    <head>1:24</head>
+    <done>true</done>
+    <resumeBlocked>false</resumeBlocked>
+  </execution>
+  <completed>true</completed>
+  <checkouts class="hudson.util.PersistedList">
+    <org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout>
+      <scm class="hudson.plugins.git.GitSCM" plugin="git@4.10.0">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+          <hudson.plugins.git.UserRemoteConfig>
+            <url>git@github.com:OfirGan/kandula-project-app.git</url>
+            <credentialsId>github.ofirgan</credentialsId>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches class="singleton-list">
+          <hudson.plugins.git.BranchSpec>
+            <name>*/final-project</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <submoduleCfg class="empty-list"/>
+        <extensions>
+          <hudson.plugins.git.extensions.impl.LocalBranch>
+            <localBranch>final-project</localBranch>
+          </hudson.plugins.git.extensions.impl.LocalBranch>
+        </extensions>
+      </scm>
+      <node>Ubuntu-VM</node>
+      <workspace>/home/ubuntu/opsschool/jenkins_client_home/workspace/kandula-cicd</workspace>
+      <changelogFile>/var/jenkins_home/jobs/kandula-cicd/builds/1/changelog8854033519871680487.xml</changelogFile>
+      <pollingBaseline class="hudson.scm.SCMRevisionState$None" reference="../../../actions/org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState/revisionStates/entry/hudson.scm.SCMRevisionState_-None"/>
+    </org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout>
+  </checkouts>
+</flow-build>
