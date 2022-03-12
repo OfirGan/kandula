@@ -35,3 +35,4 @@
   become: no
   shell: "kubectl apply -f filebeat-k8s-config.yaml"
   when: service == "ansible"
+  ignore_errors: true
