@@ -51,3 +51,4 @@
     volumes:
       - /etc/grafana/:/etc/grafana/
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: yes

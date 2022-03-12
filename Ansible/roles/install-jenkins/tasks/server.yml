@@ -20,6 +20,7 @@
     volumes:
       - /home/ubuntu/jenkins/config:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: yes
 
 - name: Install Jenkins Plugins
   shell: docker exec jenkins /bin/bash -c '/usr/local/bin/install-plugins.sh {{ item }}'
