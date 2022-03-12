@@ -55,16 +55,6 @@ resource "aws_security_group" "k8s_prometheus_sg" {
     cidr_blocks = var.cidr_blocks
   }
 
-  tags = {
-    "Name" = "k8s_prometheus_sg"
-  }
-}
-
-resource "aws_security_group" "k8s_kube_state_metrics_sg" {
-  name        = "k8s_kube_state_metrics_sg"
-  description = "K8s Kube State Metrics Security Group"
-  vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
-
   ingress {
     from_port = 8080
     to_port   = 8080
@@ -74,7 +64,7 @@ resource "aws_security_group" "k8s_kube_state_metrics_sg" {
   }
 
   tags = {
-    "Name" = "k8s_kube_state_metrics_sg"
+    "Name" = "k8s_prometheus_sg"
   }
 }
 
