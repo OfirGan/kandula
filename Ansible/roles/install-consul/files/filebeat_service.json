@@ -10,7 +10,7 @@
                     "id": "filebeat",
                     "name": "Filebeat Service",
                     "args": [
-                        "/home/ubuntu/filebeat_health_check.sh"
+                        "/etc/filebeat/filebeat_health_check.sh"
                     ],
                     "interval": "10s",
                     "timeout": "1s"
