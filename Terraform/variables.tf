@@ -140,9 +140,11 @@ variable "s3_logs_bucket_name" {
 }
 
 variable "elb_account_id" {
-  description = "ELB Account ID - pick one according to region https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions"
+  description = "ELB Account ID"
   type        = string
   default     = "127311923021"
+  # pick one according to region 
+  # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions
 }
 
 ##################################################################################

@@ -19,6 +19,11 @@ github_user_name             = "ofirgan"
 ##################################################################################
 aws_access_key_id     = "xxxxxxxxxx"
 aws_secret_access_key = "xxxxxxxxx"
+aws_default_region    = "us-east-1" 
+# If edit -> update variable "elb_account_id" to match aws region
+
+elb_account_id = "127311923021" 
+# pick one according to region https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions"
 
 private_key_file_path = "C:\\Downloads\\OpsSchool\\Private-Keys\\Kandula_Private_Key.pem"
 
