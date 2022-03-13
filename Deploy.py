@@ -23,19 +23,34 @@ def print_alb_dns_names():
 
     pass
 
-def print_jenkins_nodes_ip(boto3_ec2):
+def print_instance_private_ip(boto3_ec2, service_tag_value : string, instance_type : string):
     running_instances = boto3_ec2.instances.filter(Filters=[
-        {'Name': 'tag:service', 'Values': ['jenkins']},
-        {'Name': 'tag:instance_type', 'Values': ['node']},
+        {'Name': 'tag:service', 'Values': [service_tag_value]},
+        {'Name': 'tag:instance_type', 'Values': [instance_type]},
         {'Name': 'instance-state-name', 'Values': ['running']}
     ])
 
-    count = 1
     for instance in running_instances:
-        print("jenkins_node{0}_ip: {1}".format(
-            count, instance.private_ip_address))
-        count += 1
+        for tag in instance.tags:
+            if tag["Key"] == "Name":
+                instance_name = tag["Value"]
+        instance_ip = instance.private_ip_address
+        print(f"{instance_name}: {instance_ip}")
     pass
+
+def print_ips(boto3_ec2):
+    print("\nServers:")
+    print(f"Bastion-Server: {get_bastion_host_ip(boto3_ec2,True)} (Public IP)")
+    print(f"Bastion-Server: {get_bastion_host_ip(boto3_ec2,False)} (Private IP)")
+    print_instance_private_ip(boto3_ec2, "ansible", "server")
+    print_instance_private_ip(boto3_ec2, "grafana", "server")
+    print_instance_private_ip(boto3_ec2, "prometheus", "server")
+    print_instance_private_ip(boto3_ec2, "elk", "server")
+    print_instance_private_ip(boto3_ec2, "jenkins", "server")
+    print_instance_private_ip(boto3_ec2, "jenkins", "node")
+    print_instance_private_ip(boto3_ec2, "consul", "server")
+
+    print_alb_dns_names()
 
 def get_bastion_host_ip(boto3_ec2, get_public_ip: bool):
     running_instances = boto3_ec2.instances.filter(Filters=[
@@ -387,36 +402,23 @@ if __name__ == '__main__':
     
     else:
         print("Deploying Everything :)")
-        deploy_terraform(tfvars_file_path)
-        
+        # deploy_terraform(tfvars_file_path)
         vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
         
+        print("\nDeploying Terraform Cloud Workspaces")
         workspaces_to_apply_list = [
             vars_dict["tfe_vpc_workspace_name"]
             ,vars_dict["tfe_servers_workspace_name"]
             ,vars_dict["tfe_kubernetes_workspace_name"]
         ]
+        # run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
         
-        print("\nDeploying Terraform Cloud Workspaces")
-        run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
-        
-        workspaces_outputs = get_workspaces_outputs(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list)
-
+        print("\nDeploying Ansible")
         boto3_ec2 = boto3.resource('ec2')
         ec2_user_name = "ubuntu"
         private_key_file_path = f"{vars_dict['private_key_folder_path']}Kandula_Server_Private_Key.pem"
+        # ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
 
-        print("\nDeploying Ansible")
-        ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
-
-        print("\nServers:")
-        print(f"bastion_host_public_ip: {get_bastion_host_ip(boto3_ec2,True)}")
-        print(f"ansible_server_ip: {get_server_private_ip(boto3_ec2,'ansible')}")
-        print(f"grafana_server_ip: {get_server_private_ip(boto3_ec2,'grafana')}")
-        print(f"prometheus_server_ip: {get_server_private_ip(boto3_ec2,'prometheus')}")
-        print(f"elk_server_ip: {get_server_private_ip(boto3_ec2,'elk')}")
-        print(f"jenkins_server_ip: {get_server_private_ip(boto3_ec2,'jenkins')}")
-        print_jenkins_nodes_ip(boto3_ec2)
-        print_alb_dns_names()
+        print_ips(boto3_ec2)
 
     exit()
