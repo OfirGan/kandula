@@ -10,6 +10,7 @@ variable "tfe_token" {
 variable "tfe_organization_name" {
   description = "Terraform Cloud Organization Name"
   type        = string
+  default     = "Kandula-OpsSchool-Project" ## hard coded in -> workspaces folder -> main.tf -> module source ##
 }
 
 variable "tfe_vpc_workspace_name" {
@@ -115,6 +116,8 @@ variable "aws_secret_access_key" {
 variable "aws_default_region" {
   description = "AWS Default Region"
   type        = string
+  default     = "us-east-1"
+  # If edit -> update variable "elb_account_id" to match aws region
 }
 
 variable "vpc_cidr" {
@@ -140,6 +143,7 @@ variable "s3_logs_bucket_name" {
 variable "elb_account_id" {
   description = "ELB Account ID - pick one according to region https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions"
   type        = string
+  default     = "127311923021"
 }
 
 ##################################################################################
@@ -148,6 +152,7 @@ variable "elb_account_id" {
 variable "instance_type" {
   description = "Servers Instance Type"
   type        = string
+  default     = "t2.micro"
 }
 
 variable "consul_servers_count" {
