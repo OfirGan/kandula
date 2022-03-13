@@ -402,7 +402,7 @@ if __name__ == '__main__':
     
     else:
         print("Deploying Everything :)")
-        # deploy_terraform(tfvars_file_path)
+        deploy_terraform(tfvars_file_path)
         vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
         
         print("\nDeploying Terraform Cloud Workspaces")
@@ -411,13 +411,13 @@ if __name__ == '__main__':
             ,vars_dict["tfe_servers_workspace_name"]
             ,vars_dict["tfe_kubernetes_workspace_name"]
         ]
-        # run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
+        run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
         
         print("\nDeploying Ansible")
         boto3_ec2 = boto3.resource('ec2')
         ec2_user_name = "ubuntu"
         private_key_file_path = f"{vars_dict['private_key_folder_path']}Kandula_Server_Private_Key.pem"
-        # ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
+        ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
 
         print_ips(boto3_ec2)
 
