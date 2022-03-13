@@ -16,7 +16,7 @@
 - name: Copy Filebeat health check file
   copy:
     src: filebeat_health_check.sh
-    dest: /home/ubuntu/filebeat_health_check.sh
+    dest: /etc/filebeat/filebeat_health_check.sh
     mode: a+x
 
 - name: Configure Filebeat Service
@@ -29,6 +29,8 @@
   copy:
     src: filebeat-k8s-config.yaml
     dest: /home/ubuntu/filebeat-k8s-config.yaml
+    owner: ubuntu
+    group: ubuntu
   when: service == "ansible"
 
 - name: Deploy filebeat on K8s
