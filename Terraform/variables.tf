@@ -10,7 +10,6 @@ variable "tfe_token" {
 variable "tfe_organization_name" {
   description = "Terraform Cloud Organization Name"
   type        = string
-  default     = "Kandula-OpsSchool-Project" ## hard coded in -> workspaces folder -> main.tf -> module source ##
 }
 
 variable "tfe_vpc_workspace_name" {

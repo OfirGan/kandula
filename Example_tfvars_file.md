@@ -4,8 +4,9 @@ create terraform.tfvars using this template:
 ##################################################################################
 # Terraform Cloud
 ##################################################################################
-tfe_organization_email        = "user@gmail.com"
-tfe_token                     = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+tfe_organization_name  = "Kandula-Project" ## hard coded in -> workspaces folder -> main.tf -> module source ##
+tfe_organization_email = "user@gmail.com"
+tfe_token              = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 ##################################################################################
 # Github
