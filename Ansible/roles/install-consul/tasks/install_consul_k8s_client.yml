@@ -7,6 +7,8 @@
   copy:
     src: k8s_helm_consul_config.yaml
     dest: /home/ubuntu/k8s_helm_consul_config.yaml
+    owner: ubuntu
+    group: ubuntu
 
 - name: Update K8s Helm Consul DC Name
   lineinfile:
@@ -28,6 +30,8 @@
   copy:
     src: k8s_coredns_config.yaml
     dest: /home/ubuntu/k8s_coredns_config.yaml
+    owner: ubuntu
+    group: ubuntu
 
 - name: Get consul-consul-dns svc IP
   become: false

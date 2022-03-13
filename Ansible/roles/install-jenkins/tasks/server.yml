@@ -42,8 +42,8 @@
     src: files/kandula-cicd
     dest: /home/ubuntu/jenkins_home/jobs/
     force: no
-    group: "{{ hostvars[inventory_hostname]['docker_group'] }}"
-    mode: "0777"
+    owner: ubuntu
+    group: ubuntu
 
 - name: Restart Jenkins Container
   shell: docker restart jenkins
