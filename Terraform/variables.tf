@@ -215,7 +215,7 @@ variable "slack_notification_webhook_url" {
 variable "k8s_cluster_name" {
   type        = string
   description = "k8s Cluster Name"
-  default     = "kandula-k8s-cluster"
+  default     = "k8s-kandula-cluster"
 }
 
 variable "k8s_service_account_namespace" {
