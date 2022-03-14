@@ -368,19 +368,21 @@ def run_and_apply_workspaces(session : requests.Session, organization_name : str
         run_and_apply_workspace(session, organization_name, workspace, is_destroy)
     pass
 
-def deploy_or_destroy_promt():
-    print("Press: \n(1) To Deploy \n(2) To Destroy \n(3) To exit")
+def prompt_manu(option1 : string, option2 : string):
+    print(f"Press: \n(1) To {option1} \n(2) To {option2} \n(3) To Exit")
     input_str = str(input())
 
     if input_str == "3":
         exit()
 
-    while input_str != "1" and input_str != "2" and input_str != "3":
-        print("Press: \n(1) To Deploy \n(2) To Destroy \n(3) To exit")
-        input_str = str(input())
-        if input_str == "3":
-            exit()
+    return input_str    
+
+def deploy_or_destroy_promt():
+    input_str = prompt_manu("Deploy", "Destroy")
     
+    while input_str != "1" and input_str != "2":
+        input_str = prompt_manu("Deploy", "Destroy")
+
     is_deploy = input_str == "1"
     return is_deploy
 
