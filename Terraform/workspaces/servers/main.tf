@@ -18,7 +18,7 @@ data "terraform_remote_state" "vpc" {
 
 module "servers" {
   source  = "app.terraform.io/Kandula-Project/servers/aws"
-  version = "1.0.1"
+  version = "1.0.2"
 
   vpc_id               = data.terraform_remote_state.vpc.outputs.vpc_id
   route53_zone_zone_id = data.terraform_remote_state.vpc.outputs.route53_zone_zone_id

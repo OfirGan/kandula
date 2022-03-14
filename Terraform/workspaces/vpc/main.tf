@@ -4,7 +4,7 @@
 
 module "vpc" {
   source  = "app.terraform.io/Kandula-Project/vpc/aws"
-  version = "1.0.1"
+  version = "1.0.2"
 
   vpc_cidr                 = var.vpc_cidr
   availability_zones_count = var.availability_zones_count
