@@ -20,9 +20,10 @@ module "servers" {
   source  = "app.terraform.io/Kandula-Project/servers/aws"
   version = "1.0.1"
 
-  vpc_id              = data.terraform_remote_state.vpc.outputs.vpc_id
-  public_subnets_ids  = data.terraform_remote_state.vpc.outputs.public_subnets_ids
-  private_subnets_ids = data.terraform_remote_state.vpc.outputs.private_subnets_ids
+  vpc_id               = data.terraform_remote_state.vpc.outputs.vpc_id
+  route53_zone_zone_id = data.terraform_remote_state.vpc.outputs.route53_zone_zone_id
+  public_subnets_ids   = data.terraform_remote_state.vpc.outputs.public_subnets_ids
+  private_subnets_ids  = data.terraform_remote_state.vpc.outputs.private_subnets_ids
 
   s3_logs_bucket_name = var.s3_logs_bucket_name
   elb_account_id      = var.elb_account_id

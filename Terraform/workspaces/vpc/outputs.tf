@@ -2,6 +2,10 @@ output "vpc_id" {
   value = module.vpc.vpc_id
 }
 
+output "route53_zone_zone_id" {
+  value = module.vpc.route53_zone_zone_id
+}
+
 output "public_subnets_ids" {
   value = module.vpc.public_subnets_ids
 }
