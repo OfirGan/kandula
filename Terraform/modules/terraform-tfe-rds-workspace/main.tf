@@ -77,7 +77,7 @@ resource "tfe_variable" "tfe_organization_name" {
   key          = "tfe_organization_name"
   value        = var.tfe_organization_name
   description  = "TFE Organization Name"
-  workspace_id = tfe_workspace.kubernetes.id
+  workspace_id = tfe_workspace.rds.id
   category     = "terraform"
 }
 
@@ -90,7 +90,7 @@ resource "tfe_variable" "tfe_vpc_workspace_name" {
 }
 
 resource "tfe_variable" "db_engine_version" {
-  key          = "engine_version"
+  key          = "db_engine_version"
   value        = var.db_engine_version
   description  = "DB Engine Version"
   workspace_id = tfe_workspace.rds.id
@@ -106,7 +106,7 @@ resource "tfe_variable" "db_identifier_name" {
 }
 
 resource "tfe_variable" "db_instance_class" {
-  key          = "instance_class"
+  key          = "db_instance_class"
   value        = var.db_instance_class
   description  = "DB Instance class"
   workspace_id = tfe_workspace.rds.id
@@ -128,13 +128,5 @@ resource "tfe_variable" "db_password" {
   workspace_id = tfe_workspace.rds.id
   category     = "terraform"
   sensitive    = true
-}
-
-resource "tfe_variable" "db_ingress_ports" {
-  key          = "db_password"
-  value        = var.db_ingress_ports
-  description  = "Postgres DB ingress ports"
-  workspace_id = tfe_workspace.rds.id
-  category     = "terraform"
 }
 
