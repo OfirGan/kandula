@@ -67,7 +67,7 @@ resource "aws_db_instance" "postgres_db_instance" {
   db_subnet_group_name   = aws_db_subnet_group.postgres_db_subnet_group.name
   publicly_accessible    = true
 
-  db_name = "kandula"
+  # db_name = "kandula"
 
   tags = {
     "Name" = "${var.db_identifier_name}-postgres-db-instance"
