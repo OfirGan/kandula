@@ -91,6 +91,11 @@ variable "kubernetes_workspace_directory" {
   default     = "/Terraform/workspaces/kubernetes"
 }
 
+variable "rds_workspace_directory" {
+  description = "Working directory for RDS module"
+  type        = string
+  default     = "/Terraform/workspaces/rds"
+}
 
 variable "github_aws_vpc_module_repo_name" {
   description = "Github VPS AWS Module Repo Name"
