@@ -53,6 +53,11 @@ variable "rds_workspace_directory" {
   type        = string
 }
 
+variable "github_aws_rds_module_repo_name" {
+  description = "Github VPS AWS Module Repo Name"
+  type        = string
+}
+
 ##################################################################################
 # Slack Notifications
 ##################################################################################
