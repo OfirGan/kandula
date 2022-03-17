@@ -12,11 +12,6 @@ variable "tfe_vpc_workspace_name" {
   type        = string
 }
 
-variable "tfe_servers_workspace_name" {
-  type        = string
-  description = "Servers Workspace Name for Backed State"
-}
-
 variable "tfe_kubernetes_workspace_name" {
   description = "Terrafrom Cloud Kubernetes Workspace Name"
   type        = string

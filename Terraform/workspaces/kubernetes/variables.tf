@@ -35,11 +35,6 @@ variable "tfe_vpc_workspace_name" {
   description = "VPC Workspace Name for Backed State"
 }
 
-variable "tfe_servers_workspace_name" {
-  type        = string
-  description = "Servers Workspace Name for Backed State"
-}
-
 variable "k8s_cluster_name" {
   type        = string
   description = "k8s Cluster Name"

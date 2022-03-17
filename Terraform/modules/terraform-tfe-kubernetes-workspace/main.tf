@@ -61,6 +61,14 @@ resource "tfe_variable" "aws_default_region" {
   category     = "env"
 }
 
+resource "tfe_variable" "tfe_kubernetes_workspace_name" {
+  key          = "tfe_kubernetes_workspace_name"
+  value        = var.tfe_kubernetes_workspace_name
+  description  = "K8s Workspace Name"
+  workspace_id = tfe_workspace.kubernetes.id
+  category     = "env"
+}
+
 ##################################################################################
 # Workspace Variables
 ##################################################################################
@@ -73,35 +81,18 @@ resource "tfe_variable" "aws_region" {
   category     = "terraform"
 }
 
-resource "tfe_variable" "tfe_vpc_workspace_name" {
-  key          = "tfe_vpc_workspace_name"
-  value        = var.tfe_vpc_workspace_name
-  description  = "VPC Workspace Name"
-  workspace_id = tfe_workspace.kubernetes.id
-  category     = "terraform"
-}
-
-resource "tfe_variable" "tfe_servers_workspace_name" {
-  key          = "tfe_servers_workspace_name"
-  value        = var.tfe_servers_workspace_name
-  description  = "Servers Workspace Name"
-  workspace_id = tfe_workspace.kubernetes.id
-  category     = "terraform"
-}
-
-resource "tfe_variable" "tfe_kubernetes_workspace_name" {
-  key          = "tfe_kubernetes_workspace_name"
-  value        = var.tfe_kubernetes_workspace_name
-  description  = "Servers Workspace Name"
-  workspace_id = tfe_workspace.kubernetes.id
-  category     = "terraform"
-}
-
-
 resource "tfe_variable" "tfe_organization_name" {
   key          = "tfe_organization_name"
   value        = var.tfe_organization_name
   description  = "TFE Organization Name"
+  workspace_id = tfe_workspace.kubernetes.id
+  category     = "terraform"
+}
+
+resource "tfe_variable" "tfe_vpc_workspace_name" {
+  key          = "tfe_vpc_workspace_name"
+  value        = var.tfe_vpc_workspace_name
+  description  = "VPC Workspace Name"
   workspace_id = tfe_workspace.kubernetes.id
   category     = "terraform"
 }
