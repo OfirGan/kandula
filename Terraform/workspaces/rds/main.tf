@@ -67,7 +67,7 @@ resource "aws_db_instance" "postgres_db_instance" {
   db_subnet_group_name   = aws_db_subnet_group.postgres_db_subnet_group.name
   publicly_accessible    = true
 
-  # db_name = "kandula"
+  db_name = "kandula"
 
   tags = {
     "Name" = "${var.db_identifier_name}-postgres-db-instance"
@@ -75,7 +75,7 @@ resource "aws_db_instance" "postgres_db_instance" {
 }
 
 resource "aws_route53_record" "postgres_db_instance_dns" {
-  zone_id = data.terraform_remote_state.vpc.route53_zone_zone_id
+  zone_id = data.terraform_remote_state.vpc.outputs.route53_zone_zone_id
   name    = "rds.kandula"
   type    = "CNAME"
   ttl     = "300"
