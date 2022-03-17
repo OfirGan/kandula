@@ -30,6 +30,11 @@ variable "tfe_kubernetes_workspace_name" {
   default     = "kubernetes-workspace"
 }
 
+variable "tfe_rds_workspace_name" {
+  description = "Terrafrom Cloud rds Workspace Name"
+  type        = string
+  default     = "rds-workspace"
+}
 
 variable "tfe_organization_email" {
   description = "Terraform Cloud Organization Email"

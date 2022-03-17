@@ -400,6 +400,7 @@ if __name__ == '__main__':
         vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
         workspaces_to_destroy_list = [
             vars_dict["tfe_kubernetes_workspace_name"],
+            vars_dict["tfe_rds_workspace_name"],
             vars_dict["tfe_servers_workspace_name"], 
             vars_dict["tfe_vpc_workspace_name"]
         ]
@@ -416,6 +417,7 @@ if __name__ == '__main__':
         workspaces_to_apply_list = [
             vars_dict["tfe_vpc_workspace_name"]
             ,vars_dict["tfe_servers_workspace_name"]
+            ,vars_dict["tfe_rds_workspace_name"]
             ,vars_dict["tfe_kubernetes_workspace_name"]
         ]
         run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
