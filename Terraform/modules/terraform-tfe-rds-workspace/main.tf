@@ -130,3 +130,12 @@ resource "tfe_variable" "db_password" {
   sensitive    = true
 }
 
+resource "tfe_variable" "db_ingress_ports" {
+  key          = "db_ingress_ports"
+  value        = var.db_username
+  description  = "DB Ingress Ports"
+  workspace_id = tfe_workspace.rds.id
+  category     = "terraform"
+}
+
+

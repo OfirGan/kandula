@@ -206,6 +206,7 @@ module "rds_tfe_module" {
   db_instance_class  = var.db_instance_class
   db_username        = var.db_username
   db_password        = var.db_password
+  db_ingress_ports   = var.db_ingress_ports
 
   depends_on = [module.vpc_tfe_module]
 }
