@@ -36,8 +36,8 @@ resource "aws_key_pair" "server_key" {
 }
 
 resource "local_file" "server_key" {
-  sensitive_content = tls_private_key.server_key.private_key_pem
-  filename          = "${var.private_key_folder_path}Kandula_Server_Private_Key.pem"
+  local_sensitive_file = tls_private_key.server_key.private_key_pem
+  filename             = "${var.private_key_folder_path}Kandula_Server_Private_Key.pem"
 }
 
 ##################################################################################
@@ -67,13 +67,13 @@ resource "tls_self_signed_cert" "certificate" {
 }
 
 resource "local_file" "certificate_private_key" {
-  sensitive_content = tls_private_key.ca_key.private_key_pem
-  filename          = "${var.private_key_folder_path}Kandula_Certificat_Private_key.pem"
+  local_sensitive_file = tls_private_key.ca_key.private_key_pem
+  filename             = "${var.private_key_folder_path}Kandula_Certificat_Private_key.pem"
 }
 
 resource "local_file" "certificate" {
-  sensitive_content = tls_self_signed_cert.certificate.cert_pem
-  filename          = "${var.private_key_folder_path}Kandula_Self_Signed_Certificat.pem"
+  local_sensitive_file = tls_self_signed_cert.certificate.cert_pem
+  filename             = "${var.private_key_folder_path}Kandula_Self_Signed_Certificat.pem"
 }
 
 data "local_file" "certificate_private_key" {
@@ -206,7 +206,6 @@ module "rds_tfe_module" {
   db_instance_class  = var.db_instance_class
   db_username        = var.db_username
   db_password        = var.db_password
-  db_ingress_ports   = var.db_ingress_ports
 
   depends_on = [module.vpc_tfe_module]
 }

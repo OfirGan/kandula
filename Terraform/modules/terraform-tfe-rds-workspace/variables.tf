@@ -118,8 +118,3 @@ variable "db_password" {
   type        = string
   description = "DB Password"
 }
-
-variable "db_ingress_ports" {
-  type        = list(number)
-  description = "Postgres RDS ingress ports"
-}

@@ -40,5 +40,6 @@ variable "db_password" {
 variable "db_ingress_ports" {
   type        = list(number)
   description = "Postgres RDS ingress ports"
+  default     = [5432]
 }
 
