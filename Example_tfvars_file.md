@@ -30,6 +30,7 @@ private_key_file_path = "C:\\Downloads\\OpsSchool\\Private-Keys\\Kandula_Private
 owner_name          = "ofir"
 s3_logs_bucket_name = "ofirgan-kandula-alb-logs-bucket" # Must Be Uniq
 
+db_password = "xxxxxxxx"
 ##################################################################################
 # Slack
 ##################################################################################

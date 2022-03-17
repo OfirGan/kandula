@@ -230,3 +230,35 @@ variable "k8s_service_account_name" {
   default     = "kandula-sa"
 }
 
+
+##################################################################################
+# RDS
+##################################################################################
+
+variable "db_engine_version" {
+  type        = string
+  description = "DB Engine Version"
+  default     = "12.10"
+}
+
+variable "db_identifier_name" {
+  type        = string
+  description = "DB Identifier name"
+  default     = "kandula-db"
+}
+
+variable "db_instance_class" {
+  type        = string
+  description = "DB Instance class"
+  default     = "db.t2.micro"
+}
+
+variable "db_username" {
+  type        = string
+  description = "DB Username"
+  default     = "postgres"
+}
+
+variable "db_password" {
+  description = "DB Password"
+}

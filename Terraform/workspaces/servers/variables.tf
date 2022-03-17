@@ -13,7 +13,7 @@ variable "tfe_vpc_workspace_name" {
 }
 
 variable "tfe_servers_workspace_name" {
-  description = "Terrafrom Cloud VPC Workspace Name"
+  description = "Terrafrom Cloud Servers Workspace Name"
   type        = string
 }
 

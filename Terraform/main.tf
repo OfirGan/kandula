@@ -159,7 +159,6 @@ module "kubernetes_tfe_module" {
 
   tfe_organization_name          = var.tfe_organization_name
   tfe_vpc_workspace_name         = var.tfe_vpc_workspace_name
-  tfe_servers_workspace_name     = var.tfe_servers_workspace_name
   tfe_kubernetes_workspace_name  = var.tfe_kubernetes_workspace_name
   tfe_github_oauth_token_id      = resource.tfe_oauth_client.github_tfe_oauth_token.oauth_token_id
   notification_triggers          = var.notification_triggers
@@ -178,6 +177,35 @@ module "kubernetes_tfe_module" {
   k8s_cluster_name              = var.k8s_cluster_name
   k8s_service_account_namespace = var.k8s_service_account_namespace
   k8s_service_account_name      = var.k8s_service_account_name
+
+  depends_on = [module.vpc_tfe_module]
+}
+
+module "rds_tfe_module" {
+  source = ".\\modules\\terraform-tfe-rds-workspace"
+
+  tfe_organization_name          = var.tfe_organization_name
+  tfe_vpc_workspace_name         = var.tfe_vpc_workspace_name
+  tfe_rds_workspace_name         = var.tfe_rds_workspace_name
+  tfe_github_oauth_token_id      = resource.tfe_oauth_client.github_tfe_oauth_token.oauth_token_id
+  notification_triggers          = var.notification_triggers
+  slack_notification_webhook_url = var.slack_notification_webhook_url
+  auto_apply                     = var.auto_apply
+
+  github_user_name           = var.github_user_name
+  github_workspace_repo_name = var.github_workspace_repo_name
+  github_branch              = var.github_branch
+  rds_workspace_directory    = var.rds_workspace_directory
+
+  aws_access_key_id     = var.aws_access_key_id
+  aws_secret_access_key = var.aws_secret_access_key
+  aws_default_region    = var.aws_default_region
+
+  db_engine_version  = var.db_engine_version
+  db_identifier_name = var.db_identifier_name
+  db_instance_class  = var.db_instance_class
+  db_username        = var.db_username
+  db_password        = var.db_password
 
   depends_on = [module.vpc_tfe_module]
 }
