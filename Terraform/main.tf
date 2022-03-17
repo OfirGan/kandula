@@ -36,8 +36,8 @@ resource "aws_key_pair" "server_key" {
 }
 
 resource "local_file" "server_key" {
-  local_sensitive_file = tls_private_key.server_key.private_key_pem
-  filename             = "${var.private_key_folder_path}Kandula_Server_Private_Key.pem"
+  content  = tls_private_key.server_key.private_key_pem
+  filename = "${var.private_key_folder_path}Kandula_Server_Private_Key.pem"
 }
 
 ##################################################################################
@@ -67,13 +67,13 @@ resource "tls_self_signed_cert" "certificate" {
 }
 
 resource "local_file" "certificate_private_key" {
-  local_sensitive_file = tls_private_key.ca_key.private_key_pem
-  filename             = "${var.private_key_folder_path}Kandula_Certificat_Private_key.pem"
+  content  = tls_private_key.ca_key.private_key_pem
+  filename = "${var.private_key_folder_path}Kandula_Certificat_Private_key.pem"
 }
 
 resource "local_file" "certificate" {
-  local_sensitive_file = tls_self_signed_cert.certificate.cert_pem
-  filename             = "${var.private_key_folder_path}Kandula_Self_Signed_Certificat.pem"
+  content  = tls_self_signed_cert.certificate.cert_pem
+  filename = "${var.private_key_folder_path}Kandula_Self_Signed_Certificat.pem"
 }
 
 data "local_file" "certificate_private_key" {
@@ -192,10 +192,12 @@ module "rds_tfe_module" {
   slack_notification_webhook_url = var.slack_notification_webhook_url
   auto_apply                     = var.auto_apply
 
-  github_user_name           = var.github_user_name
-  github_workspace_repo_name = var.github_workspace_repo_name
-  github_branch              = var.github_branch
-  rds_workspace_directory    = var.rds_workspace_directory
+  github_user_name                = var.github_user_name
+  github_workspace_repo_name      = var.github_workspace_repo_name
+  github_branch                   = var.github_branch
+  rds_workspace_directory         = var.rds_workspace_directory
+  github_aws_rds_module_repo_name = var.github_aws_rds_module_repo_name
+
 
   aws_access_key_id     = var.aws_access_key_id
   aws_secret_access_key = var.aws_secret_access_key

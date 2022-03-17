@@ -3,6 +3,14 @@
 ##################################################################################
 
 terraform {
+  backend "remote" {
+    organization = var.tfe_organization_name
+
+    workspaces {
+      name = var.tfe_rds_workspace_name
+    }
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -12,4 +20,3 @@ terraform {
 }
 
 provider "aws" {}
-

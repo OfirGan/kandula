@@ -98,15 +98,21 @@ variable "rds_workspace_directory" {
 }
 
 variable "github_aws_vpc_module_repo_name" {
-  description = "Github VPS AWS Module Repo Name"
+  description = "Github VPC AWS Module Repo Name"
   type        = string
   default     = "terraform-aws-vpc"
 }
 
 variable "github_aws_servers_module_repo_name" {
-  description = "Github VPS AWS Module Repo Name"
+  description = "Github Servers AWS Module Repo Name"
   type        = string
   default     = "terraform-aws-servers"
+}
+
+variable "github_aws_rds_module_repo_name" {
+  description = "Github RDS AWS Module Repo Name"
+  type        = string
+  default     = "terraform-aws-rds"
 }
 
 ##################################################################################

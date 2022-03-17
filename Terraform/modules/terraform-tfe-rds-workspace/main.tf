@@ -1,4 +1,16 @@
 ##################################################################################
+# Registry Module
+##################################################################################
+
+resource "tfe_registry_module" "aws_rds_module" {
+  vcs_repo {
+    display_identifier = "${var.github_user_name}/${var.github_aws_rds_module_repo_name}"
+    identifier         = "${var.github_user_name}/${var.github_aws_rds_module_repo_name}"
+    oauth_token_id     = var.tfe_github_oauth_token_id
+  }
+}
+
+##################################################################################
 # Workspace
 ##################################################################################
 

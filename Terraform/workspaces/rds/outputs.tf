@@ -1,19 +1,18 @@
-
 ###################################################################################
 # OUTPUT
 ###################################################################################
 
 output "rds_endpoint" {
   description = "RDS Connection Endpoint"
-  value       = aws_db_instance.postgres_db_instance.endpoint
+  value       = module.rds.rds_endpoint
 }
 
 output "rds_address" {
   description = "RDS Host address"
-  value       = aws_db_instance.postgres_db_instance.address
+  value       = module.rds.rds_address
 }
 
 output "rds_port" {
   description = "RDS Port"
-  value       = aws_db_instance.postgres_db_instance.port
+  value       = module.rds.rds_port
 }
