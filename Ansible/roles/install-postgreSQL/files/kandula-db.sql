@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS kandula.instances_shutdown_log
 (
     job_id SERIAL NOT NULL PRIMARY KEY,
     instance_id character varying(20) NOT NULL,
-    "time" timestamp with time zone NOT NULL,
+    "time" timestamp with time zone NOT NULL
 )
 
 TABLESPACE pg_default;

@@ -23,5 +23,7 @@
     group: ubuntu
 
 - name: Configure Database with SQL File
-  command: psql --host=rds.kandula --port=5432 --username=postgres --password={{ db_password }} --dbname=kandula -a -f /home/ubuntu/kandula-db.sql
+  environment:
+    PGPASSWORD: "{{ db_password }}"
+  command: psql --host=rds.kandula --port=5432 --username=postgres --dbname=kandula -a -f /home/ubuntu/kandula-db.sql
   no_log: True
