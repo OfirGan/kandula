@@ -278,4 +278,5 @@ variable "db_username" {
 variable "db_password" {
   type        = string
   description = "DB Password"
+  # Only printable ASCII characters besides '/', '@', '"', ' ' may be used
 }
