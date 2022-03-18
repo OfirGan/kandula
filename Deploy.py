@@ -11,6 +11,19 @@ import paramiko
 import json
 from scp import SCPClient
 
+def print_rds_information():
+    rds_client = boto3.client('rds')
+    rds_instances = rds_client.describe_db_instances()
+
+    print("\nRDS:")
+
+    for db_instance in rds_instances['DBInstances']:
+        print(f"Instance Name: {db_instance['DBInstanceIdentifier']}")
+        print(f"- Endpoint Address: {db_instance['Endpoint']['Address']}")
+        print(f"- Endpoint Port: {db_instance['Endpoint']['Port']}")
+        print(f"- Master User: {db_instance['MasterUsername']}")
+
+    pass
 
 def print_alb_dns_names():
     elbList = boto3.client('elbv2')
@@ -51,6 +64,9 @@ def print_ips(boto3_ec2):
     print_instance_private_ip(boto3_ec2, "consul", "server")
 
     print_alb_dns_names()
+    print_rds_information()
+    
+    pass
 
 def get_bastion_host_ip(boto3_ec2, get_public_ip: bool):
     running_instances = boto3_ec2.instances.filter(Filters=[
@@ -426,7 +442,7 @@ if __name__ == '__main__':
         boto3_ec2 = boto3.resource('ec2')
         ec2_user_name = "ubuntu"
         private_key_file_path = f"{vars_dict['private_key_folder_path']}Kandula_Server_Private_Key.pem"
-        ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
+        # ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
 
         print_ips(boto3_ec2)
 
