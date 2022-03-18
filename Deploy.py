@@ -186,6 +186,7 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
     ]
 
     clone_ansible_repo = [
+        "rm -rf /home/ubuntu/kandula",
         "git clone -b final-project https://github.com/OfirGan/kandula.git /home/ubuntu/kandula"
     ]
 
@@ -420,7 +421,7 @@ if __name__ == '__main__':
     if is_destroy_plan:
         print("Destroying Everything !!!")
         
-        vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
+        vars_dict = get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name']) | vars_dict
         workspaces_to_destroy_list = [
             vars_dict["tfe_kubernetes_workspace_name"],
             vars_dict["tfe_rds_workspace_name"],
@@ -434,7 +435,7 @@ if __name__ == '__main__':
     else:
         print("Deploying Everything :)")
         deploy_terraform(tfvars_file_path)
-        vars_dict = vars_dict | get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name'])
+        vars_dict = get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name']) | vars_dict
         
         print("\nDeploying Terraform Cloud Workspaces")
         workspaces_to_apply_list = [
@@ -443,7 +444,7 @@ if __name__ == '__main__':
             ,vars_dict["tfe_rds_workspace_name"]
             ,vars_dict["tfe_kubernetes_workspace_name"]
         ]
-        # run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
+        run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
         
         print("\nDeploying Ansible")
         boto3_ec2 = boto3.resource('ec2')
