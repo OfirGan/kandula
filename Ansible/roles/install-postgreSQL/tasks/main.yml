@@ -1,0 +1,27 @@
+---
+- name: Add pgAdmin GPG key
+  apt_key:
+    url: https://www.pgadmin.org/static/packages_pgadmin_org.pub
+
+- name: Setup pgAdmin4 Stable repo
+  apt_repository:
+    repo: "deb https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/bionic pgadmin4 main"
+    update_cache: yes
+
+- name: Install pgAdmin 4 Desktop
+  apt:
+    name:
+      - pgadmin4-desktop
+    update_cache: yes
+    state: present
+
+- name: Copy .sql file
+  copy:
+    src: kandula-db.sql
+    dest: /home/ubuntu/kandula-db.sql
+    owner: ubuntu
+    group: ubuntu
+
+- name: Configure Database with SQL File
+  command: psql --host=rds.kandula --port=5432 --username=postgres --password={{ db_password }} --dbname=kandula -a -f /home/ubuntu/kandula-db.sql
+  no_log: True

@@ -39,6 +39,9 @@
 
     - role: install-filebeat
 
+    - role: install-postgreSQL
+      when: service == bastion
+
     - role: install-elk
       when: service == "elk"
 
