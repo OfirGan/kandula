@@ -31,6 +31,8 @@ owner_name          = "ofir"
 s3_logs_bucket_name = "ofirgan-kandula-alb-logs-bucket" # Must Be Uniq
 
 db_password = "xxxxxxxx"
+# Only printable ASCII characters besides '/', '@', '"', ' ' may be used
+
 ##################################################################################
 # Slack
 ##################################################################################
