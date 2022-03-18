@@ -158,10 +158,13 @@ def scp_file_copy(ssh_session: paramiko.client.SSHClient, file: str, remote_path
 def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClient, vars_dict):
     ansible_folder = "/home/ubuntu/kandula/Ansible"
     consul_dc_name = "kandula-dc"
-    consul_servers_count = vars_dict['consul_servers_count']
-    k8s_cluster_name = vars_dict['k8s_cluster_name']
-    aws_default_region = vars_dict['aws_default_region']
-    elk_server_ip = get_server_private_ip(boto3_ec2,'elk')
+       
+    ansible_extra_vars= f"consul_servers_count={vars_dict['consul_servers_count']} \
+                    consul_dc_name={consul_dc_name} \
+                    eks_cluster_name={vars_dict['k8s_cluster_name']} \
+                    aws_default_region={vars_dict['aws_default_region']} \
+                    elk_private_ip={get_server_private_ip(boto3_ec2,'elk')}\
+                    db_password={vars_dict['db_password']}"
 
     scp_file_copy(ansible_ssh_client,
                   private_key_file_path, '/home/ubuntu/.ssh/id_rsa')
@@ -189,7 +192,7 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
     ]
 
     run_ansible_playbook = [
-        f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml -e "consul_servers_count={consul_servers_count} consul_dc_name={consul_dc_name} eks_cluster_name={k8s_cluster_name} aws_default_region={aws_default_region} elk_private_ip={elk_server_ip}"'
+        f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml --extra-vars {ansible_extra_vars}'
     ]
 
 
