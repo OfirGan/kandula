@@ -158,13 +158,11 @@ def scp_file_copy(ssh_session: paramiko.client.SSHClient, file: str, remote_path
 def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClient, vars_dict):
     ansible_folder = "/home/ubuntu/kandula/Ansible"
     consul_dc_name = "kandula-dc"
-       
-    ansible_extra_vars= f"consul_servers_count={vars_dict['consul_servers_count']} \
-                    consul_dc_name={consul_dc_name} \
-                    eks_cluster_name={vars_dict['k8s_cluster_name']} \
-                    aws_default_region={vars_dict['aws_default_region']} \
-                    elk_private_ip={get_server_private_ip(boto3_ec2,'elk')}\
-                    db_password={vars_dict['db_password']}"
+    consul_servers_count = vars_dict['consul_servers_count']
+    k8s_cluster_name = vars_dict['k8s_cluster_name']
+    aws_default_region = vars_dict['aws_default_region']
+    db_password = vars_dict['db_password']
+    elk_server_ip = get_server_private_ip(boto3_ec2,'elk')
 
     scp_file_copy(ansible_ssh_client,
                   private_key_file_path, '/home/ubuntu/.ssh/id_rsa')
@@ -192,7 +190,13 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
     ]
 
     run_ansible_playbook = [
-        f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml --extra-vars {ansible_extra_vars}'
+        f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml --extra-vars \
+            "consul_dc_name={consul_dc_name} \
+            consul_servers_count={consul_servers_count} \
+            k8s_cluster_name={k8s_cluster_name} \
+            aws_default_region={aws_default_region} \
+            db_password={db_password} \
+            elk_server_ip={elk_server_ip}"'
     ]
 
 
@@ -439,13 +443,13 @@ if __name__ == '__main__':
             ,vars_dict["tfe_rds_workspace_name"]
             ,vars_dict["tfe_kubernetes_workspace_name"]
         ]
-        run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
+        # run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
         
         print("\nDeploying Ansible")
         boto3_ec2 = boto3.resource('ec2')
         ec2_user_name = "ubuntu"
         private_key_file_path = f"{vars_dict['private_key_folder_path']}Kandula_Server_Private_Key.pem"
-        # ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
+        ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
 
         print_ips(boto3_ec2)
 
