@@ -17,6 +17,12 @@ variable "cidr_blocks" {
   ]
 }
 
+variable "db_password" {
+  type        = string
+  description = "DB Password"
+}
+
+
 variable "k8s_service_account_namespace" {
   description = "Kubernetes Service Account Namespace"
 }

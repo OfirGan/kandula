@@ -178,6 +178,8 @@ module "kubernetes_tfe_module" {
   k8s_service_account_namespace = var.k8s_service_account_namespace
   k8s_service_account_name      = var.k8s_service_account_name
 
+  db_password = var.db_password
+
   depends_on = [module.vpc_tfe_module]
 }
 

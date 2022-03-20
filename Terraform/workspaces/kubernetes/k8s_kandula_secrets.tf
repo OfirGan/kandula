@@ -44,5 +44,6 @@ resource "kubernetes_secret_v1" "k8s_aws_secrets" {
     aws_access_key_id     = aws_iam_access_key.kandula_app_user_access_key.id
     aws_secret_access_key = aws_iam_access_key.kandula_app_user_access_key.secret
     aws_default_region    = "${var.aws_region}"
+    db_password           = "${var.db_password}"
   }
 }
