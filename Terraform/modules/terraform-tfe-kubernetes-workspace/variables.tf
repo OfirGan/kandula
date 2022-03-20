@@ -105,3 +105,7 @@ variable "k8s_service_account_namespace" {
 variable "k8s_service_account_name" {
   description = "Kubernetes Service Account Name"
 }
+
+variable "db_password" {
+  description = "DB Password"
+}
