@@ -357,11 +357,11 @@ def run_workspace(session : requests.Session, workspace_id : string, is_destroy 
     run_id = response["data"]["id"]    
     return run_id
 
-def wait_run_to_be_in_status_x(session : requests.Session, run_id : string, run_end_status : string):
+def wait_run_to_be_in_status_x(session : requests.Session, run_id : string, run_end_status : list):
     response = session.get(f"https://app.terraform.io/api/v2/runs/{run_id}").json()
     run_status = response["data"]["attributes"]["status"]
 
-    while(run_status != run_end_status):
+    while(run_status not in run_end_status):
         time.sleep(2)
         
         response = session.get(f"https://app.terraform.io/api/v2/runs/{run_id}").json()
@@ -381,11 +381,11 @@ def run_and_apply_workspace(session : requests.Session, organization_name : stri
     workspace_id = get_workspace_id(session, organization_name, workspace_name)
     print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} - Planning")
     run_id =  run_workspace(session, workspace_id, is_destroy)
-    wait_run_to_be_in_status_x(session, run_id, "planned")
+    wait_run_to_be_in_status_x(session, run_id, ["planned","planned_and_finished"])
     print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} - Planned")
     apply_run(session, run_id)
     print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} - Applying")
-    wait_run_to_be_in_status_x(session, run_id, "applied")
+    wait_run_to_be_in_status_x(session, run_id, ["applied","planned_and_finished"])
     print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} Applied")
     pass
 
