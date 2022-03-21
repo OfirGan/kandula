@@ -377,12 +377,14 @@ def apply_run(session : requests.Session, run_id : string):
     pass
 
 def run_and_apply_workspace(session : requests.Session, organization_name : string, workspace_name : string, is_destroy : bool):
-    destroy_or_deploy_txt = 'Destroy' if is_destroy else 'Deploy'
+    destroy_or_deploy_txt = 'Destruction' if is_destroy else 'Deployment'
     workspace_id = get_workspace_id(session, organization_name, workspace_name)
+    print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} - Planning")
     run_id =  run_workspace(session, workspace_id, is_destroy)
     wait_run_to_be_in_status_x(session, run_id, "planned")
-    print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} Planned")
+    print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} - Planned")
     apply_run(session, run_id)
+    print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} - Applying")
     wait_run_to_be_in_status_x(session, run_id, "applied")
     print(f"Workspace {workspace_name} - {destroy_or_deploy_txt} Applied")
     pass
