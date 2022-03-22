@@ -43,7 +43,7 @@
     ]
   changed_when: true
 
-- name: Copy Kandula Job folder
+- name: Copy Jobs & Nodes Config
   copy:
     src: files/jenkins_home/
     dest: /home/ubuntu/jenkins_home/
