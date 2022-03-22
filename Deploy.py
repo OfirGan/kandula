@@ -162,7 +162,6 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
     k8s_cluster_name = vars_dict['k8s_cluster_name']
     aws_default_region = vars_dict['aws_default_region']
     db_password = vars_dict['db_password']
-    elk_server_ip = get_server_private_ip(boto3_ec2,'elk')
 
     scp_file_copy(ansible_ssh_client,
                   private_key_file_path, '/home/ubuntu/.ssh/id_rsa')
@@ -194,10 +193,9 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
         f'ansible-playbook {ansible_folder}/main.yml -i {ansible_folder}/aws_ec2.yml --extra-vars \
             "consul_dc_name={consul_dc_name} \
             consul_servers_count={consul_servers_count} \
-            k8s_cluster_name={k8s_cluster_name} \
+            eks_cluster_name={k8s_cluster_name} \
             aws_default_region={aws_default_region} \
-            db_password={db_password} \
-            elk_server_ip={elk_server_ip}"'
+            db_password={db_password}"'
     ]
 
 
