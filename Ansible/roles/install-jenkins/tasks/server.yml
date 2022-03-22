@@ -6,12 +6,17 @@
     owner: ubuntu
     group: ubuntu
 
+- name: "Create Docker Bridge Network for consul DNS"
+  shell: "docker network create local"
+  ignore_errors: true
+
 - name: Start Jenkins Container
   community.docker.docker_container:
     name: jenkins
     image: jenkins/jenkins
     state: started
     restart_policy: always
+    network_mode: local
     ports:
       - "8080:8080"
       - "50000:50000"
