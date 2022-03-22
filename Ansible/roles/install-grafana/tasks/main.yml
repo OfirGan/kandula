@@ -41,13 +41,17 @@
     src: grafana.ini
     dest: /etc/grafana/grafana.ini
 
+- name: "Create Docker Bridge Network for consul DNS"
+  shell: "docker network create local"
+  ignore_errors: true
+
 - name: Start Grafana Container
   community.docker.docker_container:
     name: grafana
     image: grafana/grafana
     state: started
     restart_policy: always
-    network_mode: host
+    network_mode: local
     volumes:
       - /etc/grafana/:/etc/grafana/
       - /var/run/docker.sock:/var/run/docker.sock
