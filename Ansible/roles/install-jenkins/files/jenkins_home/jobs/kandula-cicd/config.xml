@@ -23,7 +23,7 @@
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
           <url>git@github.com:OfirGan/kandula-project-app.git</url>
-          <credentialsId>github.ofirgan</credentialsId>
+          <credentialsId>github.user</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>

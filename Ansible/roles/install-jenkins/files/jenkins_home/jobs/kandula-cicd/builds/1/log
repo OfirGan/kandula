@@ -14,7 +14,7 @@ Running on [8mha:////4KC1b8uQOBqMI9HkRs94ssHiQE6K76yRLEPwA+ScEXCaAAAAoh+LCAAAAA
 [8mha:////4OAIcghlhZaoWLffHB5tS4kZpvAIYHod14eVFKUEPwJ7AAAAox+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOJCakRFa6XhBSYxxo5159gOTsWL+Bp/IBCJii1WO9vM8wXrGODIQaNV1BuKrUHvRj0vzBz6q+OMli/YMkV2ChuVG+7UacGGk4IlRQkrARtFreNoSCfYCivvsnKSdHVOYf4OAkrTDfCAQszmJEP6whRgdxu7yPTz/BXA5BOU9f5TtX8D0loxuL4AAAA=[0m[Pipeline] git
 Selected Git installation does not exist. Using Default
 The recommended git tool is: NONE
-using credential github.ofirgan
+using credential github.user
 Fetching changes from the remote Git repository
  > git rev-parse --resolve-git-dir /home/ubuntu/opsschool/jenkins_client_home/workspace/kandula-cicd/.git # timeout=10
  > git config remote.origin.url git@github.com:OfirGan/kandula-project-app.git # timeout=10
@@ -41,7 +41,8 @@ First time build. Skipping changelog.
 [8mha:////4Kyc0NPazmalYeZCDyWHk96+rNXwyRH/XHXco1iPrCO+AAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiKpAQVVrLDS8wsTFOrDtjOyQVL+Jr/IFAJCq2WO1sM88XLFOEI0eLraHOUWocBt/baeHAsbt4HrDlMzZMib1BaQbJ2tQzSs4G5hQlLASsDDWekyObYS1adVeVV2SrU47TdxBQOn2DBxRiMmcV8xfGCJtrrxPTz/NXAGPIUG53n9qHNxXfVKy+AAAA[0m[Pipeline] isUnix
 [8mha:////4L1wR2ccvO9Ou/JAUMz1wByQY/+fJeLYxL2yFWV616kvAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiKoQQVVrLDS8wsTFOrDtjOyQVL+Jr/IFAJCq2WO1sM88XLFOEI0eLraHOUWocBt/baeHAsbt4HrDlMzZMib1BaQbJ2tQzSs4G5hQlLASsDDWekyObYS1adVeVV2SrU47TdxBQOn2DBxRiMmcV8xfGCJtrrxPTz/NXAGPIUG53n9qHN1TuT7W+AAAA[0m[Pipeline] sh
 + docker build -t ofirgan/kandula-app:v1.1 .
-Sending build context to Docker daemon  475.6kB
+Sending build context to Docker daemon  475.6kB
+
 Step 1/7 : FROM python:3.9-slim
  ---> 606eea5f22d7
 Step 2/7 : RUN mkdir /kandula

@@ -12,7 +12,7 @@
       <arguments>
         <entry>
           <string>credentialsId</string>
-          <string>github.ofirgan</string>
+          <string>github.user</string>
         </entry>
         <entry>
           <string>branch</string>

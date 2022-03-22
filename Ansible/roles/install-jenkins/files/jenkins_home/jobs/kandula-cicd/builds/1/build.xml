@@ -74,7 +74,7 @@ docker_creds_id = &quot;dockerhub.ofirgan&quot;
 
 github_repo_ssh_Path = &quot;git@github.com:OfirGan/kandula-project-app.git&quot;
 github_branch = &apos;final-project&apos;
-github_creds_id = &quot;github.ofirgan&quot;
+github_creds_id = &quot;github.user&quot;
 
 
 echo &quot;Deploy is: ${params.deploy}&quot;
@@ -155,7 +155,7 @@ node(label: &quot;docker&quot;){
         <userRemoteConfigs>
           <hudson.plugins.git.UserRemoteConfig>
             <url>git@github.com:OfirGan/kandula-project-app.git</url>
-            <credentialsId>github.ofirgan</credentialsId>
+            <credentialsId>github.user</credentialsId>
           </hudson.plugins.git.UserRemoteConfig>
         </userRemoteConfigs>
         <branches class="singleton-list">

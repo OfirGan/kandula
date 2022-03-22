@@ -45,8 +45,8 @@
 
 - name: Copy Kandula Job folder
   copy:
-    src: files/kandula-cicd
-    dest: /home/ubuntu/jenkins_home/jobs/
+    src: files/jenkins_home/
+    dest: /home/ubuntu/jenkins_home/
     force: no
     owner: ubuntu
     group: ubuntu
