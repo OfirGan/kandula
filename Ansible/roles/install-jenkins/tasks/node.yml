@@ -10,6 +10,4 @@
     state: present
 
 - name: pip3 Update
-  pip:
-    name: pip3
-    state: latest
+  command: "pip3 install --upgrade pip"
