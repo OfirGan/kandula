@@ -3,5 +3,13 @@
   apt:
     name:
       - openjdk-11-jdk
+      - python3-venv
+      - libpq-dev
+      - python-psycopg2
     update_cache: yes
     state: present
+
+- name: pip3 Update
+  pip:
+    name: pip3
+    state: latest
