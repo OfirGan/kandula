@@ -214,9 +214,11 @@ def ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_fi
     bastion_host_private_ip = get_bastion_host_ip(boto3_ec2, False)
     ansible_server_ip = get_server_private_ip(boto3_ec2, 'ansible')
 
+    print("Open SSH Session To: Bastion Host")
     bastion_ssh_client = ssh_client_connection(
         bastion_host_public_ip, ec2_user_name, private_key_file_path)
 
+    print("Open SSH Session To: Ansible Server")
     ansible_ssh_client = ssh_client_connection_throgh_bastion_host(
         bastion_ssh_client, bastion_host_private_ip, ansible_server_ip, ec2_user_name, private_key_file_path)
 
