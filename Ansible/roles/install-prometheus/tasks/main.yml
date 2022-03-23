@@ -12,19 +12,13 @@
     src: prometheus.yml
     dest: /etc/prometheus/prometheus.yml
 
-- name: "Create Docker Bridge Network for consul DNS"
-  shell: "docker network create local"
-  ignore_errors: true
-
 - name: Start Prometheus Container
   community.docker.docker_container:
     name: prometheus
     image: prom/prometheus
     state: started
     restart_policy: always
-    network_mode: local
-    ports:
-      - "9090:9090"
+    network_mode: host
     volumes:
       - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - /var/run/docker.sock:/var/run/docker.sock
