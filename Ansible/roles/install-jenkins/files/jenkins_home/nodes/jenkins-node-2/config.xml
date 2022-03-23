@@ -8,7 +8,7 @@
   <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.806.v2253cedd3295">
     <host>jenkins-node-2.node.consul</host>
     <port>22</port>
-    <credentialsId>aws.ubuntu</credentialsId>
+    <credentialsId>aws.user</credentialsId>
     <launchTimeoutSeconds>60</launchTimeoutSeconds>
     <maxNumRetries>10</maxNumRetries>
     <retryWaitTime>15</retryWaitTime>
