@@ -52,6 +52,8 @@
     state: started
     restart_policy: always
     network_mode: local
+    ports:
+      - "3000:3000"
     volumes:
       - /etc/grafana/:/etc/grafana/
       - /var/run/docker.sock:/var/run/docker.sock

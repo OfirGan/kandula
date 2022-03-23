@@ -23,6 +23,8 @@
     state: started
     restart_policy: always
     network_mode: local
+    ports:
+      - "9090:9090"
     volumes:
       - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - /var/run/docker.sock:/var/run/docker.sock
