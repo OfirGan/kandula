@@ -169,7 +169,7 @@ variable "elb_account_id" {
 variable "instance_type" {
   description = "Servers Instance Type"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "consul_servers_count" {
