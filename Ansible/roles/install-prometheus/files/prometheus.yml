@@ -38,6 +38,14 @@ scrape_configs:
       - source_labels: ["__meta_consul_node"]
         target_label: "instance"
 
+  # Monitor kandula-app-service service using consul client
+  - job_name: "kandula-app-servic"
+    static_configs:
+      - targets: ["kandula-app-service-default.service.consul:9100"]
+    relabel_configs:
+      - source_labels: ["__meta_consul_service_id"]
+        target_label: "pod"
+
   # # Monitor kube-state-metrics
   # - job_name: "kubernetes_state_metrics"
   #   static_configs:
