@@ -108,12 +108,9 @@
     src: consul.service
     dest: /etc/systemd/system/consul.service
 
-- name: Enable Consul service
-  systemd:
-    name: consul.service
-    enabled: yes
-
 - name: Start Consul service
   systemd:
     name: consul.service
     state: restarted
+    enabled: yes
+    daemon_reload: yes

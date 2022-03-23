@@ -3,6 +3,8 @@
   copy:
     src: consul_server_config.json
     dest: /etc/consul.d/config.json
+    owner: consul
+    group: consul
 
 - name: Update Consul bootstrap_to_excpect
   lineinfile:
