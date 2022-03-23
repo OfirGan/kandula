@@ -61,7 +61,13 @@
   loop:
     - /opt/consul
     - /etc/consul.d
-    - /run/consul
+
+- name: Create Consul Directories
+  file:
+    path: "/etc/consul.d/consul.pid"
+    state: touch
+    owner: consul
+    group: consul
 
 - include_tasks: server.yml
   when: is_consul_monitored == true and service == "consul" and instance_type == "server"

@@ -9,7 +9,7 @@ Group=consul
 PIDFile=/run/consul/consul.pid
 Restart=on-failure
 Environment=GOMAXPROCS=2
-ExecStart=/usr/local/bin/consul agent -pid-file=/run/consul/consul.pid -config-dir=/etc/consul.d
+ExecStart=/usr/local/bin/consul agent -pid-file=/etc/consul.d/consul.pid -config-dir=/etc/consul.d
 ExecReload=/bin/kill -s HUP $MAINPID
 KillSignal=SIGINT
 TimeoutStopSec=5
