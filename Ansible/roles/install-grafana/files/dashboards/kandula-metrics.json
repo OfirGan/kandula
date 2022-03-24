@@ -52,7 +52,8 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "red",
@@ -610,7 +611,7 @@
                 {
                     "datasource": {
                         "type": "prometheus",
-                        "uid": "_wpso4ank"
+                        "uid": "P397D3F24A5ABE6C6"
                     },
                     "exemplar": true,
                     "expr": "increase(kandula_app_monitor_views_sec_sum{method=\"view_home\"}[1m])",
@@ -623,7 +624,7 @@
                 {
                     "datasource": {
                         "type": "prometheus",
-                        "uid": "_wpso4ank"
+                        "uid": "P397D3F24A5ABE6C6"
                     },
                     "exemplar": true,
                     "expr": "increase(kandula_app_monitor_views_sec_sum{method=\"view_scheduler\"}[1m])",
@@ -635,7 +636,7 @@
                 {
                     "datasource": {
                         "type": "prometheus",
-                        "uid": "_wpso4ank"
+                        "uid": "P397D3F24A5ABE6C6"
                     },
                     "exemplar": true,
                     "expr": "increase(kandula_app_monitor_views_sec_sum{method=\"view_metrics\"}[1m])",
@@ -647,7 +648,7 @@
                 {
                     "datasource": {
                         "type": "prometheus",
-                        "uid": "_wpso4ank"
+                        "uid": "P397D3F24A5ABE6C6"
                     },
                     "exemplar": true,
                     "expr": "increase(kandula_app_monitor_views_sec_sum{method=\"view_about\"}[1m])",
@@ -659,7 +660,7 @@
                 {
                     "datasource": {
                         "type": "prometheus",
-                        "uid": "_wpso4ank"
+                        "uid": "P397D3F24A5ABE6C6"
                     },
                     "exemplar": true,
                     "expr": "increase(kandula_app_monitor_views_sec_sum{method=\"view_health\"}[1m])",
@@ -671,7 +672,7 @@
                 {
                     "datasource": {
                         "type": "prometheus",
-                        "uid": "_wpso4ank"
+                        "uid": "P397D3F24A5ABE6C6"
                     },
                     "exemplar": true,
                     "expr": "increase(kandula_app_monitor_views_sec_sum{method=\"view_instances\"}[1m])",
@@ -816,7 +817,7 @@
         "list": []
     },
     "time": {
-        "from": "now-3h",
+        "from": "now-5m",
         "to": "now"
     },
     "timepicker": {
