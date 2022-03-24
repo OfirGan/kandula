@@ -48,6 +48,6 @@
     group: ubuntu
 
 - name: Create Kandula Objects In Kibana
-  shell: 'curl -X POST localhost:5601/api/saved_objects/_import -H "kbn-xsrf: true" --form file=@/home/ubuntu/kandula-objects.ndjson'
-  # shell: 'curl -X POST localhost:5601/api/saved_objects/_import?createNewCopies=true -H "kbn-xsrf: true" --form file=@/home/ubuntu/kandula-objects.ndjson'
+  shell: 'curl -X POST elk.kandula:5601/api/saved_objects/_import -H "kbn-xsrf: true" --form file=@/home/ubuntu/kandula-objects.ndjson'
+  # shell: 'curl -X POST elk.kandula:5601/api/saved_objects/_import?createNewCopies=true -H "kbn-xsrf: true" --form file=@/home/ubuntu/kandula-objects.ndjson'
   ignore_errors: true
