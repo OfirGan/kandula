@@ -40,14 +40,5 @@
     name: kibana
     state: restarted
 
-- name: Copy Kandula Objects file
-  copy:
-    src: kandula-objects.ndjson
-    dest: /home/ubuntu/kandula-objects.ndjson
-    owner: ubuntu
-    group: ubuntu
-
-- name: Create Kandula Objects In Kibana
-  shell: 'curl -X POST elk.kandula:5601/api/saved_objects/_import -H "kbn-xsrf: true" --form file=@/home/ubuntu/kandula-objects.ndjson'
-  # shell: 'curl -X POST elk.kandula:5601/api/saved_objects/_import?createNewCopies=true -H "kbn-xsrf: true" --form file=@/home/ubuntu/kandula-objects.ndjson'
-  ignore_errors: true
+- include_tasks: kibana-config.yml
+  when: service == "elk"
