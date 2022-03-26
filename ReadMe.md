@@ -1,3 +1,19 @@
+# About
+~~~
+This Repo demonstrate automated creation of configured & resilient infrastructure to support application CI-CD cycle.
+
+In this infrastructure:
+* Bastion Host - Jump Host to Connect To The Servers
+* Ansible Server - Configuration Management
+* Consul Servers - Service Discovery
+* Jenkins Server & Nodes - CI-CD
+* Prometheus & Grafana - Monitoring
+* Elasticsearch & Kibana - Logging
+* RDS - App Database
+* EKS - K8s Deployment
+
+~~~
+
 # Prerequisites
 ~~~
 Fork Those Git Repos to your Github Account
@@ -13,7 +29,9 @@ Configure your PC with:
     * boto3
     * scp
     * paramiko
+    * json
     * re
+    * requests
 ~~~
 
 # How To Deploy:
@@ -28,7 +46,6 @@ Configure your PC with:
 ~~~
 
 # Jenkis Prerequisites
-
 ~~~
 
 * Fork Repo git@github.com:OfirGan/kandula-project-app.git
@@ -40,7 +57,6 @@ Configure your PC with:
 ~~~
 
 # Manually Config Jenkis To Deploy App:
-
 ~~~
 
 ## Update Users (user & pass): (hard coded ids in https://github.com/OfirGan/kandula-project-app/blob/final-project/jenkinsfile.groovy)
