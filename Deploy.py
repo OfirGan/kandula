@@ -1,9 +1,7 @@
 import os
 import sys
 import time
-from typing import Dict
-from urllib import response
-from markupsafe import string
+import string
 import requests
 import re
 import boto3
