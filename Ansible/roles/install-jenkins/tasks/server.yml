@@ -37,6 +37,7 @@
       "blueocean",
       "slack",
       "build-monitor-plugin",
+      "pipeline-stage-view",
       "docker-workflow",
       "kubernetes-cd",
       "pyenv-pipeline",
