@@ -149,9 +149,13 @@ def progress(filename, size, sent):
     sys.stdout.write("Copying: %s - Progress: %.2f%%   \n" %
                      (filename, float(sent)/float(size)*100))
 
-def scp_file_copy(ssh_session: paramiko.client.SSHClient, file: str, remote_path):
+def scp_file_upload(ssh_session: paramiko.client.SSHClient, file: str, remote_path):
     with SCPClient(ssh_session.get_transport(), progress=progress) as scp:
         scp.put(file, remote_path=remote_path, recursive=True)
+
+def scp_file_dowload(ssh_session: paramiko.client.SSHClient, remote_path: str, local_path: str):
+    with SCPClient(ssh_session.get_transport(), progress=progress) as scp:
+        scp.get(remote_path, local_path)
 
 def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClient, vars_dict):
     ansible_folder = "/home/ubuntu/kandula/Ansible"
@@ -160,8 +164,11 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
     k8s_cluster_name = vars_dict['k8s_cluster_name']
     aws_default_region = vars_dict['aws_default_region']
     db_password = vars_dict['db_password']
+    git_branch = vars_dict['github_branch']
+    vpn_password = vars_dict['vpn_password']
 
-    scp_file_copy(ansible_ssh_client,
+
+    scp_file_upload(ansible_ssh_client,
                   private_key_file_path, '/home/ubuntu/.ssh/id_rsa')
 
     configure_ssh = [
@@ -184,7 +191,7 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
 
     clone_ansible_repo = [
         "rm -rf /home/ubuntu/kandula",
-        "git clone -b final-project https://github.com/OfirGan/kandula.git /home/ubuntu/kandula"
+        f"git clone -b {git_branch} https://github.com/OfirGan/kandula.git /home/ubuntu/kandula"
     ]
 
     run_ansible_playbook = [
@@ -193,7 +200,8 @@ def ansible_install_configure_deploy(ansible_ssh_client: paramiko.client.SSHClie
             consul_servers_count={consul_servers_count} \
             eks_cluster_name={k8s_cluster_name} \
             aws_default_region={aws_default_region} \
-            db_password={db_password}"'
+            db_password={db_password} \
+            vpn_password={vpn_password}"'
     ]
 
 
@@ -223,6 +231,9 @@ def ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_fi
     ssh_run_commands(bastion_ssh_client, ["sudo sed -i 's/#   StrictHostKeyChecking ask/    StrictHostKeyChecking no/g' /etc/ssh/ssh_config"])
 
     ansible_install_configure_deploy(ansible_ssh_client, vars_dict)
+
+    scp_file_dowload("/home/ubuntu/kandula.ovpn", ".")
+    ssh_run_commands(bastion_host_public_ip,["sudo rm -rf /home/ubuntu/kandula.ovpn"])
 
     close_ssh_session(ansible_ssh_client, "Ansible Server")
     close_ssh_session(bastion_ssh_client, "Bastion Host")
