@@ -230,8 +230,8 @@ def ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_fi
 
     ansible_install_configure_deploy(ansible_ssh_client, vars_dict)
 
-    scp_file_dowload(bastion_host_public_ip,"/home/ubuntu/kandula.ovpn", ".")
-    ssh_run_commands(bastion_host_public_ip,["sudo rm -rf /home/ubuntu/kandula.ovpn"])
+    scp_file_dowload(bastion_ssh_client ,"/home/ubuntu/kandula.ovpn", ".")
+    ssh_run_commands(bastion_ssh_client ,["sudo rm -rf /home/ubuntu/kandula.ovpn"])
 
     close_ssh_session(ansible_ssh_client, "Ansible Server")
     close_ssh_session(bastion_ssh_client, "Bastion Host")
@@ -443,23 +443,23 @@ if __name__ == '__main__':
     
     else:
         print("Deploying Everything :)")
-        # deploy_terraform(tfvars_file_path)
+        deploy_terraform(tfvars_file_path)
         vars_dict = get_all_workspaces_vars_dict(session, vars_dict['tfe_organization_name']) | vars_dict
         
         print("\nDeploying Terraform Cloud Workspaces")
         workspaces_to_apply_list = [
             vars_dict["tfe_vpc_workspace_name"]
             ,vars_dict["tfe_servers_workspace_name"]
-            # ,vars_dict["tfe_rds_workspace_name"]
-            # ,vars_dict["tfe_kubernetes_workspace_name"]
+            ,vars_dict["tfe_rds_workspace_name"]
+            ,vars_dict["tfe_kubernetes_workspace_name"]
         ]
-        # run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
+        run_and_apply_workspaces(session, vars_dict['tfe_organization_name'], workspaces_to_apply_list, False)
         
         print("\nDeploying Ansible")
         boto3_ec2 = boto3.resource('ec2')
         ec2_user_name = "ubuntu"
         private_key_file_path = f"{vars_dict['private_key_folder_path']}Kandula_Server_Private_Key.pem"
-        # ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
+        ansible_deploy_through_bastion_host(boto3_ec2, ec2_user_name, private_key_file_path)
 
         print_ips(boto3_ec2)
 
