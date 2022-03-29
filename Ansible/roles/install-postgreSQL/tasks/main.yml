@@ -26,4 +26,5 @@
   environment:
     PGPASSWORD: "{{ db_password }}"
   command: psql --host=rds.kandula --port=5432 --username=postgres --dbname=kandula -a -f /home/ubuntu/kandula-db.sql
-  no_log: True
+  no_log: true
+  ignore_errors: true
