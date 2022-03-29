@@ -13,7 +13,7 @@ tfe_token              = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ##################################################################################
 github_personal_access_token = "xxxxxxxxxxxxxxxxxxx"
 github_user_name             = "ofirgan"
-
+github_branch                = "final-project"
 ##################################################################################
 # AWS Global
 ##################################################################################
