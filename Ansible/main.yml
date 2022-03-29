@@ -58,3 +58,6 @@
 
     - role: install-jenkins
       when: service == "jenkins"
+
+    - role: install-openvpn
+      when: service == "bastion"
